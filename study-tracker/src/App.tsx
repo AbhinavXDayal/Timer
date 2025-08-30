@@ -38,10 +38,12 @@ const App: React.FC = () => {
   const [showBreakReminder, setShowBreakReminder] = useState(false);
   const [showEyeReminder, setShowEyeReminder] = useState(false);
   const [reminderState, setReminderState] = useState({ lastReminder: 0, dismissed: false });
+  const [eyeReminderCountdown, setEyeReminderCountdown] = useState(30);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const eyeCountdownRef = useRef<NodeJS.Timeout | null>(null);
 
   // Plant types for gamification
   const plantTypes = [
@@ -129,12 +131,17 @@ const App: React.FC = () => {
       playAlarm();
     }, 2 * 60 * 60 * 1000);
 
-    // 30-minute eye reminder
+    // 30-minute eye reminder - start immediately and then every 30 minutes
+    const now = Date.now();
+    setReminderState(prev => ({ ...prev, lastReminder: now }));
+    
     eyeReminderIntervalRef.current = setInterval(() => {
+      const currentTime = Date.now();
       setShowEyeReminder(true);
+      setEyeReminderCountdown(30);
       playAlarm();
-      setReminderState(prev => ({ ...prev, dismissed: false }));
-    }, 30 * 60 * 1000);
+      setReminderState(prev => ({ ...prev, lastReminder: currentTime, dismissed: false }));
+    }, 30 * 60 * 1000); // Every 30 minutes
   };
 
   const stopReminders = () => {
