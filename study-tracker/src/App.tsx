@@ -359,10 +359,10 @@ const App: React.FC = () => {
           🌱 Study Forest
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
           {/* Main Timer Section */}
           <div className="lg:col-span-2">
-            <div className="bg-gray-800 rounded-2xl p-8 shadow-2xl">
+            <div className="bg-gray-800/50 rounded-2xl p-8 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
                 <div className="relative w-80 h-80 mb-8">
@@ -371,31 +371,31 @@ const App: React.FC = () => {
                     text={formatTime(cycleSession?.timeLeft || 0)}
                     styles={buildStyles({
                       pathColor: getProgressColor(),
-                      textColor: '#ffffff',
+                      textColor: '#e5e7eb',
                       trailColor: '#374151',
                       strokeLinecap: 'round',
                     })}
-                    strokeWidth={8}
+                    strokeWidth={6}
                   />
                   
                   {/* Phase indicator */}
                   {cycleSession && (
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-16">
-                      <div className={`text-lg font-semibold ${
-                        cycleSession.currentPhase === 'focus' ? 'text-forest-green' : 'text-yellow-400'
+                      <div className={`text-base font-medium ${
+                        cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
-                        {cycleSession.currentPhase === 'focus' ? '🎯 Focus' : '☕ Break'}
+                        {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Controls */}
-                <div className="flex gap-4 mb-6">
+                <div className="flex gap-3 mb-6">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
-                      className="bg-forest-green hover:bg-forest-dark text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                     >
                       Start Focus Session
                     </button>
@@ -404,21 +404,21 @@ const App: React.FC = () => {
                       {cycleSession.isPaused ? (
                         <button
                           onClick={resumeSession}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                         >
                           Resume
                         </button>
                       ) : (
                         <button
                           onClick={pauseSession}
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                         >
                           Pause
                         </button>
                       )}
                       <button
                         onClick={stopSession}
-                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                       >
                         Stop
                       </button>
@@ -427,8 +427,8 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Status */}
-                <div className={`text-lg font-medium ${
-                  cycleSession?.isActive ? 'text-forest-green' : 'text-gray-400'
+                <div className={`text-sm font-medium ${
+                  cycleSession?.isActive ? 'text-gray-300' : 'text-gray-500'
                 }`}>
                   {cycleSession?.isActive 
                     ? (cycleSession.isPaused ? 'Session Paused' : 'Session Active')
@@ -439,7 +439,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800 rounded-2xl p-6 mt-6 shadow-2xl">
+            <div className="bg-gray-800/50 rounded-2xl p-6 mt-6 shadow-lg border border-gray-700/30">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Session History</h2>
                 <button
@@ -487,12 +487,12 @@ const App: React.FC = () => {
           </div>
 
           {/* Right Side - Forest and Eye Timer */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 flex flex-col h-full">
             {/* 30-30-30 Rule Timer */}
             {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
-              <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
+              <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
                 <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
-                <div className="text-center">
+                <div className="text-center flex flex-col justify-center h-full">
                   <div className="text-3xl font-bold text-blue-400 mb-2">
                     {formatTime(eyeRuleTimer)}
                   </div>
@@ -504,7 +504,7 @@ const App: React.FC = () => {
             )}
 
             {/* Forest Section */}
-            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
+            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 flex-1">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold">🌲 Your Forest</h2>
                 <button
@@ -520,7 +520,7 @@ const App: React.FC = () => {
                 <div className="text-sm text-gray-400">Plants Grown</div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3 flex-1">
                 {forest.map((plant) => (
                   <div
                     key={plant.id}
@@ -537,7 +537,7 @@ const App: React.FC = () => {
               </div>
 
               {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-6">
+                <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
                   <div className="text-3xl mb-2">🌱</div>
                   <div className="text-sm">Complete focus sessions to grow your forest!</div>
                 </div>
