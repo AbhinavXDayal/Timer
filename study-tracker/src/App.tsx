@@ -353,9 +353,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-forest-green">
+    <div className="h-screen bg-gray-900 text-white p-4 overflow-hidden">
+      <div className="max-w-7xl mx-auto h-full">
+        <h1 className="text-3xl font-bold text-center mb-6 text-forest-green">
           🌱 Study Forest
         </h1>
 
@@ -435,64 +435,50 @@ const App: React.FC = () => {
                     : 'No active session'
                   }
                 </div>
-
-                {/* 30-30-30 Rule Status */}
-                {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
-                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-xl">
-                    <div className="text-sm text-blue-300 mb-2">👁️ 30-30-30 Rule Timer</div>
-                    <div className="text-2xl font-bold text-blue-400 mb-2">
-                      {formatTime(eyeRuleTimer)}
-                    </div>
-                    <div className="text-xs text-blue-400">
-                      Next reminder in {Math.floor(eyeRuleTimer / 60000)}m {Math.floor((eyeRuleTimer % 60000) / 1000)}s
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Session History */}
-            <div className="bg-gray-800 rounded-2xl p-6 mt-8 shadow-2xl">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Session History</h2>
+            {/* Session History - Compact Version */}
+            <div className="bg-gray-800 rounded-2xl p-6 mt-6 shadow-2xl">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Session History</h2>
                 <button
                   onClick={clearHistory}
-                  className="text-gray-400 hover:text-red-400 transition-colors duration-300"
+                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
                 >
                   Clear History
                 </button>
               </div>
               
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
                 {sessionHistory.length > 0 ? (
-                  sessionHistory.map((session) => (
+                  sessionHistory.slice(0, 6).map((session) => (
                     <div
                       key={session.id}
-                      className="bg-gray-700 rounded-xl p-4 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
+                      className="bg-gray-700 rounded-xl p-3 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className={`text-2xl ${
+                      <div className="flex items-center gap-2">
+                        <span className={`text-lg ${
                           session.type === 'focus' ? 'text-forest-green' : 'text-yellow-400'
                         }`}>
                           {session.type === 'focus' ? '🎯' : '☕'}
                         </span>
                         <div>
-                          <div className="font-medium">
-                            {session.type === 'focus' ? 'Focus Session' : 'Break Session'}
+                          <div className="font-medium text-sm">
+                            {session.type === 'focus' ? 'Focus' : 'Break'}
                           </div>
-                          <div className="text-sm text-gray-400">{session.date}</div>
+                          <div className="text-xs text-gray-400">{session.duration}</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold">{session.duration}</div>
-                        <div className="text-sm text-gray-400">
-                          {session.startTime} - {session.endTime}
+                        <div className="text-xs text-gray-400">
+                          {session.startTime}
                         </div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-400 py-8">
+                  <div className="text-center text-gray-400 py-4 col-span-2">
                     No sessions recorded yet. Start your first focus session!
                   </div>
                 )}
@@ -500,14 +486,33 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* Forest Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl h-fit">
+          {/* Right Side - Forest and Eye Timer */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* 30-30-30 Rule Timer */}
+            {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
+              <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
+                <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-400 mb-2">
+                    {formatTime(eyeRuleTimer)}
+                  </div>
+                  <div className="text-sm text-blue-300 mb-3">
+                    Next reminder in {Math.floor(eyeRuleTimer / 60000)}m {Math.floor((eyeRuleTimer % 60000) / 1000)}s
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Look at something 30 feet away for 30 seconds
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Forest Section */}
+            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">🌲 Your Forest</h2>
+                <h2 className="text-xl font-bold">🌲 Your Forest</h2>
                 <button
                   onClick={clearForest}
-                  className="text-gray-400 hover:text-red-400 transition-colors duration-300"
+                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
                 >
                   Clear Forest
                 </button>
@@ -535,9 +540,9 @@ const App: React.FC = () => {
               </div>
 
               {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-8">
-                  <div className="text-4xl mb-2">🌱</div>
-                  <div>Complete focus sessions to grow your forest!</div>
+                <div className="text-center text-gray-400 py-6">
+                  <div className="text-3xl mb-2">🌱</div>
+                  <div className="text-sm">Complete focus sessions to grow your forest!</div>
                 </div>
               )}
             </div>
