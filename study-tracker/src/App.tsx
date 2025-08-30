@@ -39,11 +39,14 @@ const App: React.FC = () => {
   const [showEyeReminder, setShowEyeReminder] = useState(false);
   const [reminderState, setReminderState] = useState({ lastReminder: 0, dismissed: false });
   const [eyeReminderCountdown, setEyeReminderCountdown] = useState(30);
+  const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
+  const [eyeRuleActive, setEyeRuleActive] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeCountdownRef = useRef<NodeJS.Timeout | null>(null);
+  const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Plant types for gamification
   const plantTypes = [
@@ -63,6 +66,8 @@ const App: React.FC = () => {
     const savedHistory = localStorage.getItem('sessionHistory');
     const savedForest = localStorage.getItem('forest');
     const savedReminderState = localStorage.getItem('reminderState');
+    const savedEyeRuleTimer = localStorage.getItem('eyeRuleTimer');
+    const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
 
     if (savedCycleSession) {
       const session = JSON.parse(savedCycleSession);
@@ -83,6 +88,14 @@ const App: React.FC = () => {
     if (savedReminderState) {
       setReminderState(JSON.parse(savedReminderState));
     }
+
+    if (savedEyeRuleTimer) {
+      setEyeRuleTimer(JSON.parse(savedEyeRuleTimer));
+    }
+
+    if (savedEyeRuleActive) {
+      setEyeRuleActive(JSON.parse(savedEyeRuleActive));
+    }
   }, []);
 
   // Save data to localStorage
@@ -93,7 +106,9 @@ const App: React.FC = () => {
     localStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
     localStorage.setItem('forest', JSON.stringify(forest));
     localStorage.setItem('reminderState', JSON.stringify(reminderState));
-  }, [cycleSession, sessionHistory, forest, reminderState]);
+    localStorage.setItem('eyeRuleTimer', JSON.stringify(eyeRuleTimer));
+    localStorage.setItem('eyeRuleActive', JSON.stringify(eyeRuleActive));
+  }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive]);
 
   // Start eye countdown when modal opens
   useEffect(() => {
@@ -138,18 +153,26 @@ const App: React.FC = () => {
       playAlarm();
     }, 2 * 60 * 60 * 1000);
 
-    // 30-minute eye reminder - start immediately and then every 30 minutes
-    const now = Date.now();
-    setReminderState(prev => ({ ...prev, lastReminder: now }));
+    // Start 30-30-30 rule timer
+    setEyeRuleActive(true);
+    setEyeRuleTimer(30 * 60 * 1000); // Reset to 30 minutes
     
-    eyeReminderIntervalRef.current = setInterval(() => {
-      const currentTime = Date.now();
-      setShowEyeReminder(true);
-      setEyeReminderCountdown(30);
-      playAlarm();
-      setReminderState(prev => ({ ...prev, lastReminder: currentTime, dismissed: false }));
-      startEyeCountdown();
-    }, 30 * 60 * 1000); // Every 30 minutes
+    eyeRuleTimerRef.current = setInterval(() => {
+      setEyeRuleTimer(prev => {
+        if (prev <= 1000) {
+          // Timer finished - show reminder
+          setShowEyeReminder(true);
+          setEyeReminderCountdown(30);
+          playAlarm();
+          setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
+          startEyeCountdown();
+          
+          // Reset timer for next 30 minutes
+          return 30 * 60 * 1000;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
   };
 
   const stopReminders = () => {
@@ -165,6 +188,11 @@ const App: React.FC = () => {
       clearInterval(eyeCountdownRef.current);
       eyeCountdownRef.current = null;
     }
+    if (eyeRuleTimerRef.current) {
+      clearInterval(eyeRuleTimerRef.current);
+      eyeRuleTimerRef.current = null;
+    }
+    setEyeRuleActive(false);
   };
 
   const completeSession = (session: CycleSession) => {
@@ -252,6 +280,10 @@ const App: React.FC = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+    if (eyeRuleTimerRef.current) {
+      clearInterval(eyeRuleTimerRef.current);
+      eyeRuleTimerRef.current = null;
     }
     setCycleSession(prev => prev ? { ...prev, isPaused: true } : null);
   };
@@ -405,11 +437,14 @@ const App: React.FC = () => {
                 </div>
 
                 {/* 30-30-30 Rule Status */}
-                {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && (
+                {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
                   <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-xl">
-                    <div className="text-sm text-blue-300 mb-1">👁️ 30-30-30 Rule Active</div>
+                    <div className="text-sm text-blue-300 mb-2">👁️ 30-30-30 Rule Timer</div>
+                    <div className="text-2xl font-bold text-blue-400 mb-2">
+                      {formatTime(eyeRuleTimer)}
+                    </div>
                     <div className="text-xs text-blue-400">
-                      Every 30 minutes, look at something 30 feet away for 30 seconds
+                      Next reminder in {Math.floor(eyeRuleTimer / 60000)}m {Math.floor((eyeRuleTimer % 60000) / 1000)}s
                     </div>
                   </div>
                 )}
