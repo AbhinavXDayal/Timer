@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd study-tracker && npm run build",
+  "outputDirectory": "study-tracker/build",
+  "framework": "create-react-app",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
