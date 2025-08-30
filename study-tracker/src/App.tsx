@@ -359,9 +359,9 @@ const App: React.FC = () => {
           🌱 Study Forest
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Timer Section */}
-          <div className="lg:col-span-2 flex flex-col h-full">
+          <div className="lg:col-span-2">
             <div className="bg-gray-800 rounded-2xl p-8 shadow-2xl">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
@@ -439,7 +439,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800 rounded-2xl p-6 mt-6 shadow-2xl flex-1 flex flex-col">
+            <div className="bg-gray-800 rounded-2xl p-6 mt-6 shadow-2xl">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Session History</h2>
                 <button
@@ -450,7 +450,7 @@ const App: React.FC = () => {
                 </button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 flex-1 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
                 {sessionHistory.length > 0 ? (
                   sessionHistory.slice(0, 6).map((session) => (
                     <div
@@ -487,17 +487,14 @@ const App: React.FC = () => {
           </div>
 
           {/* Right Side - Forest and Eye Timer */}
-          <div className="lg:col-span-1 flex flex-col h-full">
+          <div className="lg:col-span-1 space-y-6">
             {/* 30-30-30 Rule Timer */}
             {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
-              <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl mb-6">
+              <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
                 <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-400 mb-2">
                     {formatTime(eyeRuleTimer)}
-                  </div>
-                  <div className="text-sm text-blue-300 mb-3">
-                    Next reminder in {Math.floor(eyeRuleTimer / 60000)}m {Math.floor((eyeRuleTimer % 60000) / 1000)}s
                   </div>
                   <div className="text-xs text-gray-400">
                     Look at something 30 feet away for 30 seconds
@@ -506,8 +503,8 @@ const App: React.FC = () => {
               </div>
             )}
 
-            {/* Forest Section - Takes remaining space */}
-            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl flex-1 flex flex-col">
+            {/* Forest Section */}
+            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold">🌲 Your Forest</h2>
                 <button
@@ -523,7 +520,7 @@ const App: React.FC = () => {
                 <div className="text-sm text-gray-400">Plants Grown</div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 flex-1 overflow-y-auto">
+              <div className="grid grid-cols-3 gap-3">
                 {forest.map((plant) => (
                   <div
                     key={plant.id}
@@ -540,7 +537,7 @@ const App: React.FC = () => {
               </div>
 
               {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
+                <div className="text-center text-gray-400 py-6">
                   <div className="text-3xl mb-2">🌱</div>
                   <div className="text-sm">Complete focus sessions to grow your forest!</div>
                 </div>
