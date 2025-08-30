@@ -13,6 +13,16 @@ interface ReminderState {
   dismissed: boolean;
 }
 
+interface PredefinedSession {
+  isActive: boolean;
+  startTime: string;
+  breakStartTime?: string;
+  studyEndTime?: string;
+  currentPhase: 'study' | 'break' | 'completed';
+  studyDuration: number; // in minutes
+  breakDuration: number; // in minutes
+}
+
 const App: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const [currentSession, setCurrentSession] = useState<StudySession | null>(null);
@@ -22,11 +32,14 @@ const App: React.FC = () => {
   const [reminderState, setReminderState] = useState<ReminderState>({ lastReminder: 0, dismissed: false });
   const [sessionDuration, setSessionDuration] = useState<string>('');
   const [sessionHistory, setSessionHistory] = useState<StudySession[]>([]);
+  const [predefinedSession, setPredefinedSession] = useState<PredefinedSession | null>(null);
+  const [predefinedTimer, setPredefinedTimer] = useState<string>('');
 
   const sessionStartTimeRef = useRef<number>(0);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const predefinedIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Round time to nearest 5 minutes
   const roundToNearest5Minutes = (date: Date): string => {
@@ -79,6 +92,16 @@ const App: React.FC = () => {
     if (savedHistory) {
       setSessionHistory(JSON.parse(savedHistory));
     }
+
+    // Load predefined session
+    const savedPredefinedSession = localStorage.getItem('predefinedSession');
+    if (savedPredefinedSession) {
+      const session = JSON.parse(savedPredefinedSession);
+      setPredefinedSession(session);
+      if (session.isActive) {
+        startPredefinedTimer(session);
+      }
+    }
   }, []);
 
   // Save data to localStorage whenever it changes
@@ -91,7 +114,10 @@ const App: React.FC = () => {
     }
     localStorage.setItem('reminderState', JSON.stringify(reminderState));
     localStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
-  }, [currentSession, lastStopTime, reminderState, sessionHistory]);
+    if (predefinedSession) {
+      localStorage.setItem('predefinedSession', JSON.stringify(predefinedSession));
+    }
+  }, [currentSession, lastStopTime, reminderState, sessionHistory, predefinedSession]);
 
   const startTimers = () => {
     // 2-hour break reminder
@@ -135,6 +161,58 @@ const App: React.FC = () => {
       durationIntervalRef.current = null;
     }
     setSessionDuration('');
+  };
+
+  const startPredefinedTimer = (session: PredefinedSession) => {
+    const startTime = new Date(session.startTime).getTime();
+    const studyEndTime = startTime + (session.studyDuration * 60 * 1000);
+    const breakEndTime = studyEndTime + (session.breakDuration * 60 * 1000);
+    
+    predefinedIntervalRef.current = setInterval(() => {
+      const now = Date.now();
+      
+      if (session.currentPhase === 'study' && now >= studyEndTime) {
+        // Study phase ended, start break
+        setPredefinedSession(prev => prev ? {
+          ...prev,
+          currentPhase: 'break',
+          breakStartTime: new Date(now).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+          })
+        } : null);
+        playAlarm();
+      } else if (session.currentPhase === 'break' && now >= breakEndTime) {
+        // Break ended, session completed
+        setPredefinedSession(prev => prev ? {
+          ...prev,
+          currentPhase: 'completed',
+          studyEndTime: new Date(now).toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+          })
+        } : null);
+        stopPredefinedTimer();
+        playAlarm();
+      }
+      
+      // Update timer display
+      const elapsed = now - startTime;
+      const totalMinutes = Math.floor(elapsed / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      setPredefinedTimer(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
+    }, 1000);
+  };
+
+  const stopPredefinedTimer = () => {
+    if (predefinedIntervalRef.current) {
+      clearInterval(predefinedIntervalRef.current);
+      predefinedIntervalRef.current = null;
+    }
+    setPredefinedTimer('');
   };
 
   const playAlarm = () => {
@@ -196,6 +274,27 @@ const App: React.FC = () => {
     setSessionHistory([]);
   };
 
+  const startPredefinedSession = () => {
+    const now = new Date();
+    const session: PredefinedSession = {
+      isActive: true,
+      startTime: now.toISOString(),
+      currentPhase: 'study',
+      studyDuration: 120, // 2 hours
+      breakDuration: 30   // 30 minutes
+    };
+    
+    setPredefinedSession(session);
+    startPredefinedTimer(session);
+  };
+
+  const stopPredefinedSession = () => {
+    if (predefinedSession) {
+      setPredefinedSession(prev => prev ? { ...prev, isActive: false } : null);
+      stopPredefinedTimer();
+    }
+  };
+
   return (
     <div className="container">
       {/* Main Cards Section */}
@@ -252,6 +351,47 @@ const App: React.FC = () => {
             <div style={{ textAlign: 'center', fontSize: '14px', color: '#8b949e', marginTop: '15px' }}>
               Reminder dismissed - will show again in 30 minutes
             </div>
+          )}
+        </div>
+
+        {/* Predefined Session Card */}
+        <div className="card">
+          <h2>2-Hour Study Session</h2>
+          <p style={{ textAlign: 'center', color: '#8b949e', marginBottom: '20px', lineHeight: '1.6' }}>
+            Start a structured 2-hour study session with automatic 30-minute break.
+          </p>
+          
+          {predefinedSession && (
+            <div className="time-display">
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Phase:</strong> {predefinedSession.currentPhase === 'study' ? 'Study Time' : 
+                                        predefinedSession.currentPhase === 'break' ? 'Break Time' : 'Completed'}
+              </div>
+              {predefinedTimer && (
+                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#3fb950', margin: '5px 0' }}>
+                  {predefinedTimer}
+                </div>
+              )}
+              {predefinedSession.breakStartTime && (
+                <div style={{ fontSize: '14px', color: '#8b949e' }}>
+                  Break started at: {predefinedSession.breakStartTime}
+                </div>
+              )}
+            </div>
+          )}
+          
+          <div className={`status ${predefinedSession?.isActive ? 'active' : 'inactive'}`}>
+            {predefinedSession?.isActive ? 'Session Active' : 'Session Inactive'}
+          </div>
+          
+          {!predefinedSession?.isActive ? (
+            <button className="button" onClick={startPredefinedSession}>
+              Start 2-Hour Session
+            </button>
+          ) : (
+            <button className="button stop" onClick={stopPredefinedSession}>
+              Stop Session
+            </button>
           )}
         </div>
       </div>
