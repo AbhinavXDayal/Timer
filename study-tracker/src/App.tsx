@@ -1,153 +1,143 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
 
-interface StudySession {
+interface Session {
+  id: string;
+  type: 'focus' | 'break';
   startTime: string;
-  stopTime?: string;
+  endTime?: string;
   duration?: string;
   date: string;
 }
 
-interface ReminderState {
-  lastReminder: number;
-  dismissed: boolean;
+interface Plant {
+  id: string;
+  type: 'tree' | 'flower' | 'bush';
+  plantedAt: string;
+  completed: boolean;
 }
 
-interface PredefinedSession {
+interface CycleSession {
   isActive: boolean;
-  startTime: string;
-  breakStartTime?: string;
-  studyEndTime?: string;
-  currentPhase: 'study' | 'break' | 'completed';
-  studyDuration: number; // in minutes
-  breakDuration: number; // in minutes
+  currentPhase: 'focus' | 'break';
+  startTime: number;
+  timeLeft: number;
+  totalTime: number;
+  isPaused: boolean;
 }
+
+const FOCUS_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+const BREAK_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
 
 const App: React.FC = () => {
-  const [isActive, setIsActive] = useState(false);
-  const [currentSession, setCurrentSession] = useState<StudySession | null>(null);
-  const [lastStopTime, setLastStopTime] = useState<string>('');
+  const [cycleSession, setCycleSession] = useState<CycleSession | null>(null);
+  const [sessionHistory, setSessionHistory] = useState<Session[]>([]);
+  const [forest, setForest] = useState<Plant[]>([]);
   const [showBreakReminder, setShowBreakReminder] = useState(false);
   const [showEyeReminder, setShowEyeReminder] = useState(false);
-  const [reminderState, setReminderState] = useState<ReminderState>({ lastReminder: 0, dismissed: false });
-  const [sessionDuration, setSessionDuration] = useState<string>('');
-  const [sessionHistory, setSessionHistory] = useState<StudySession[]>([]);
-  const [predefinedSession, setPredefinedSession] = useState<PredefinedSession | null>(null);
-  const [predefinedTimer, setPredefinedTimer] = useState<string>('');
+  const [reminderState, setReminderState] = useState({ lastReminder: 0, dismissed: false });
 
-  const sessionStartTimeRef = useRef<number>(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const predefinedIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Round time to nearest 5 minutes
-  const roundToNearest5Minutes = (date: Date): string => {
-    const minutes = date.getMinutes();
-    const roundedMinutes = Math.round(minutes / 5) * 5;
-    const roundedDate = new Date(date);
-    roundedDate.setMinutes(roundedMinutes, 0, 0);
-    return roundedDate.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: false 
-    });
-  };
+  // Plant types for gamification
+  const plantTypes = [
+    { type: 'tree', emoji: '🌳', name: 'Oak Tree' },
+    { type: 'tree', emoji: '🌲', name: 'Pine Tree' },
+    { type: 'tree', emoji: '🌴', name: 'Palm Tree' },
+    { type: 'flower', emoji: '🌸', name: 'Cherry Blossom' },
+    { type: 'flower', emoji: '🌹', name: 'Rose' },
+    { type: 'flower', emoji: '🌻', name: 'Sunflower' },
+    { type: 'bush', emoji: '🌿', name: 'Fern' },
+    { type: 'bush', emoji: '🍃', name: 'Leaf' },
+  ];
 
-  // Calculate duration between two times
-  const calculateDuration = (startTime: string, stopTime: string): string => {
-    const start = new Date(`2000-01-01T${startTime}:00`);
-    const stop = new Date(`2000-01-01T${stopTime}:00`);
-    const diffMs = stop.getTime() - start.getTime();
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}h ${minutes}m`;
-  };
-
-  // Load data from localStorage on component mount
+  // Load data from localStorage
   useEffect(() => {
-    const savedSession = localStorage.getItem('currentSession');
-    const savedLastStop = localStorage.getItem('lastStopTime');
-    const savedReminderState = localStorage.getItem('reminderState');
+    const savedCycleSession = localStorage.getItem('cycleSession');
     const savedHistory = localStorage.getItem('sessionHistory');
+    const savedForest = localStorage.getItem('forest');
+    const savedReminderState = localStorage.getItem('reminderState');
 
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-      setCurrentSession(session);
-      if (session.startTime && !session.stopTime) {
-        setIsActive(true);
-        sessionStartTimeRef.current = new Date(session.startTime).getTime();
-        startTimers();
+    if (savedCycleSession) {
+      const session = JSON.parse(savedCycleSession);
+      setCycleSession(session);
+      if (session.isActive && !session.isPaused) {
+        startTimer(session);
       }
-    }
-
-    if (savedLastStop) {
-      setLastStopTime(savedLastStop);
-    }
-
-    if (savedReminderState) {
-      setReminderState(JSON.parse(savedReminderState));
     }
 
     if (savedHistory) {
       setSessionHistory(JSON.parse(savedHistory));
     }
 
-    // Load predefined session
-    const savedPredefinedSession = localStorage.getItem('predefinedSession');
-    if (savedPredefinedSession) {
-      const session = JSON.parse(savedPredefinedSession);
-      setPredefinedSession(session);
-      if (session.isActive) {
-        startPredefinedTimer(session);
-      }
+    if (savedForest) {
+      setForest(JSON.parse(savedForest));
+    }
+
+    if (savedReminderState) {
+      setReminderState(JSON.parse(savedReminderState));
     }
   }, []);
 
-  // Save data to localStorage whenever it changes
+  // Save data to localStorage
   useEffect(() => {
-    if (currentSession) {
-      localStorage.setItem('currentSession', JSON.stringify(currentSession));
+    if (cycleSession) {
+      localStorage.setItem('cycleSession', JSON.stringify(cycleSession));
     }
-    if (lastStopTime) {
-      localStorage.setItem('lastStopTime', lastStopTime);
-    }
-    localStorage.setItem('reminderState', JSON.stringify(reminderState));
     localStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
-    if (predefinedSession) {
-      localStorage.setItem('predefinedSession', JSON.stringify(predefinedSession));
-    }
-  }, [currentSession, lastStopTime, reminderState, sessionHistory, predefinedSession]);
+    localStorage.setItem('forest', JSON.stringify(forest));
+    localStorage.setItem('reminderState', JSON.stringify(reminderState));
+  }, [cycleSession, sessionHistory, forest, reminderState]);
 
-  const startTimers = () => {
+  const formatTime = (milliseconds: number): string => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const startTimer = (session: CycleSession) => {
+    timerRef.current = setInterval(() => {
+      setCycleSession(prev => {
+        if (!prev) return null;
+        
+        const newTimeLeft = prev.timeLeft - 1000;
+        
+        if (newTimeLeft <= 0) {
+          // Session completed
+          completeSession(prev);
+          return null;
+        }
+        
+        return { ...prev, timeLeft: newTimeLeft };
+      });
+    }, 1000);
+
+    // Start reminders
+    startReminders();
+  };
+
+  const startReminders = () => {
     // 2-hour break reminder
     breakIntervalRef.current = setInterval(() => {
       setShowBreakReminder(true);
       playAlarm();
-    }, 2 * 60 * 60 * 1000); // 2 hours
+    }, 2 * 60 * 60 * 1000);
 
-    // 30-minute eye reminder - start immediately and then every 30 minutes
-    const now = Date.now();
-    setReminderState(prev => ({ ...prev, lastReminder: now }));
-    
+    // 30-minute eye reminder
     eyeReminderIntervalRef.current = setInterval(() => {
-      const currentTime = Date.now();
       setShowEyeReminder(true);
       playAlarm();
-      setReminderState(prev => ({ ...prev, lastReminder: currentTime, dismissed: false }));
-    }, 30 * 60 * 1000); // Every 30 minutes
-
-    // Update session duration every second
-    durationIntervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - sessionStartTimeRef.current;
-      const hours = Math.floor(elapsed / (1000 * 60 * 60));
-      const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
-      setSessionDuration(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-    }, 1000);
+      setReminderState(prev => ({ ...prev, dismissed: false }));
+    }, 30 * 60 * 1000);
   };
 
-  const stopTimers = () => {
+  const stopReminders = () => {
     if (breakIntervalRef.current) {
       clearInterval(breakIntervalRef.current);
       breakIntervalRef.current = null;
@@ -156,74 +146,27 @@ const App: React.FC = () => {
       clearInterval(eyeReminderIntervalRef.current);
       eyeReminderIntervalRef.current = null;
     }
-    if (durationIntervalRef.current) {
-      clearInterval(durationIntervalRef.current);
-      durationIntervalRef.current = null;
-    }
-    setSessionDuration('');
   };
 
-  const startPredefinedTimer = (session: PredefinedSession) => {
-    const startTime = new Date(session.startTime).getTime();
-    const studyEndTime = startTime + (session.studyDuration * 60 * 1000);
-    const breakEndTime = studyEndTime + (session.breakDuration * 60 * 1000);
-    
-    predefinedIntervalRef.current = setInterval(() => {
-      const now = Date.now();
-      
-      if (session.currentPhase === 'study' && now >= studyEndTime) {
-        // Study phase ended, start break
-        setPredefinedSession(prev => prev ? {
-          ...prev,
-          currentPhase: 'break',
-          breakStartTime: new Date(now).toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false 
-          })
-        } : null);
-        playAlarm();
-      } else if (session.currentPhase === 'break' && now >= breakEndTime) {
-        // Break ended, session completed
-        setPredefinedSession(prev => prev ? {
-          ...prev,
-          currentPhase: 'completed',
-          studyEndTime: new Date(now).toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false 
-          })
-        } : null);
-        stopPredefinedTimer();
-        playAlarm();
-      }
-      
-      // Update timer display
-      const elapsed = now - startTime;
-      const totalMinutes = Math.floor(elapsed / (1000 * 60));
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-      setPredefinedTimer(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
-    }, 1000);
-  };
-
-  const stopPredefinedTimer = () => {
-    if (predefinedIntervalRef.current) {
-      clearInterval(predefinedIntervalRef.current);
-      predefinedIntervalRef.current = null;
-    }
-    setPredefinedTimer('');
-  };
-
-  const playAlarm = () => {
-    playBeep();
-  };
-
-  const startSession = () => {
+  const completeSession = (session: CycleSession) => {
     const now = new Date();
-    const roundedTime = roundToNearest5Minutes(now);
-    const session: StudySession = { 
-      startTime: roundedTime,
+    const endTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+
+    // Save completed session
+    const completedSession: Session = {
+      id: Date.now().toString(),
+      type: session.currentPhase,
+      startTime: new Date(session.startTime).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      endTime,
+      duration: formatTime(session.totalTime),
       date: now.toLocaleDateString('en-US', { 
         weekday: 'long', 
         year: 'numeric', 
@@ -231,34 +174,87 @@ const App: React.FC = () => {
         day: 'numeric' 
       })
     };
-    
-    setCurrentSession(session);
-    setIsActive(true);
-    sessionStartTimeRef.current = now.getTime();
-    startTimers();
+
+    setSessionHistory(prev => [completedSession, ...prev.slice(0, 19)]); // Keep last 20 sessions
+
+    // Add plant to forest if it was a focus session
+    if (session.currentPhase === 'focus') {
+      addPlantToForest();
+    }
+
+    // Play alarm
+    playAlarm();
+
+    // Switch to next phase or complete cycle
+    if (session.currentPhase === 'focus') {
+      // Start break
+      const newSession: CycleSession = {
+        isActive: true,
+        currentPhase: 'break',
+        startTime: Date.now(),
+        timeLeft: BREAK_DURATION,
+        totalTime: BREAK_DURATION,
+        isPaused: false
+      };
+      setCycleSession(newSession);
+      startTimer(newSession);
+    } else {
+      // Break completed, cycle finished
+      setCycleSession(null);
+      stopReminders();
+    }
+  };
+
+  const addPlantToForest = () => {
+    const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
+    const newPlant: Plant = {
+      id: Date.now().toString(),
+      type: randomPlant.type as 'tree' | 'flower' | 'bush',
+      plantedAt: new Date().toISOString(),
+      completed: true
+    };
+    setForest(prev => [...prev, newPlant]);
+  };
+
+  const startFocusSession = () => {
+    const newSession: CycleSession = {
+      isActive: true,
+      currentPhase: 'focus',
+      startTime: Date.now(),
+      timeLeft: FOCUS_DURATION,
+      totalTime: FOCUS_DURATION,
+      isPaused: false
+    };
+    setCycleSession(newSession);
+    startTimer(newSession);
+  };
+
+  const pauseSession = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setCycleSession(prev => prev ? { ...prev, isPaused: true } : null);
+  };
+
+  const resumeSession = () => {
+    if (cycleSession) {
+      setCycleSession(prev => prev ? { ...prev, isPaused: false } : null);
+      startTimer(cycleSession);
+    }
   };
 
   const stopSession = () => {
-    const now = new Date();
-    const roundedTime = roundToNearest5Minutes(now);
-    
-    if (currentSession) {
-      const duration = calculateDuration(currentSession.startTime, roundedTime);
-      const completedSession: StudySession = { 
-        ...currentSession, 
-        stopTime: roundedTime,
-        duration 
-      };
-      
-      setCurrentSession(completedSession);
-      setLastStopTime(roundedTime);
-      
-      // Add to history
-      setSessionHistory(prev => [completedSession, ...prev.slice(0, 9)]); // Keep last 10 sessions
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-    
-    setIsActive(false);
-    stopTimers();
+    stopReminders();
+    setCycleSession(null);
+  };
+
+  const playAlarm = () => {
+    playBeep();
   };
 
   const dismissBreakReminder = () => {
@@ -274,174 +270,212 @@ const App: React.FC = () => {
     setSessionHistory([]);
   };
 
-  const startPredefinedSession = () => {
-    const now = new Date();
-    const session: PredefinedSession = {
-      isActive: true,
-      startTime: now.toISOString(),
-      currentPhase: 'study',
-      studyDuration: 120, // 2 hours
-      breakDuration: 30   // 30 minutes
-    };
-    
-    setPredefinedSession(session);
-    startPredefinedTimer(session);
+  const clearForest = () => {
+    setForest([]);
   };
 
-  const stopPredefinedSession = () => {
-    if (predefinedSession) {
-      setPredefinedSession(prev => prev ? { ...prev, isActive: false } : null);
-      stopPredefinedTimer();
-    }
+  const getProgressPercentage = () => {
+    if (!cycleSession) return 0;
+    return ((cycleSession.totalTime - cycleSession.timeLeft) / cycleSession.totalTime) * 100;
+  };
+
+  const getProgressColor = () => {
+    if (!cycleSession) return '#3b82f6';
+    return cycleSession.currentPhase === 'focus' ? '#22c55e' : '#f59e0b';
   };
 
   return (
-    <div className="container">
-      {/* Main Cards Section */}
-      <div className="main-cards">
-        {/* Study Session Card */}
-        <div className="card">
-          <h2>Study Session</h2>
-          
-          {currentSession?.startTime && (
-            <div className="time-display">
-              Started at: {currentSession.startTime}
-            </div>
-          )}
-          
-          {lastStopTime && (
-            <div className="time-display">
-              Stopped at: {lastStopTime}
-            </div>
-          )}
-          
-          {isActive && sessionDuration && (
-            <div className="time-display" style={{ fontSize: '24px', fontWeight: 'bold', color: '#3fb950', margin: '5px 0' }}>
-              {sessionDuration}
-            </div>
-          )}
-          
-          <div className={`status ${isActive ? 'active' : 'inactive'}`}>
-            {isActive ? 'Session Active' : 'Session Inactive'}
-          </div>
-          
-          {!isActive ? (
-            <button className="button" onClick={startSession}>
-              Start Study Session
-            </button>
-          ) : (
-            <button className="button stop" onClick={stopSession}>
-              Stop Study Session
-            </button>
-          )}
-        </div>
+    <div className="min-h-screen bg-gray-900 text-white p-4">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-8 text-forest-green">
+          🌱 Study Forest
+        </h1>
 
-        {/* 30-30-30 Reminder Card */}
-        <div className="card">
-          <h2>30-30-30 Rule Reminder</h2>
-          <p style={{ textAlign: 'center', color: '#8b949e', marginBottom: '30px', lineHeight: '1.6' }}>
-            Every 30 minutes, look at something 30 feet away for 30 seconds to reduce eye strain.
-          </p>
-          
-          <div className="status">
-            {isActive ? 'Reminders Active' : 'Start a session to enable reminders'}
-          </div>
-          
-          {reminderState.dismissed && (
-            <div style={{ textAlign: 'center', fontSize: '14px', color: '#8b949e', marginTop: '15px' }}>
-              Reminder dismissed - will show again in 30 minutes
-            </div>
-          )}
-        </div>
-
-        {/* Predefined Session Card */}
-        <div className="card">
-          <h2>2-Hour Study Session</h2>
-          <p style={{ textAlign: 'center', color: '#8b949e', marginBottom: '20px', lineHeight: '1.6' }}>
-            Start a structured 2-hour study session with automatic 30-minute break.
-          </p>
-          
-          {predefinedSession && (
-            <div className="time-display">
-              <div style={{ marginBottom: '10px' }}>
-                <strong>Phase:</strong> {predefinedSession.currentPhase === 'study' ? 'Study Time' : 
-                                        predefinedSession.currentPhase === 'break' ? 'Break Time' : 'Completed'}
-              </div>
-              {predefinedTimer && (
-                <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#3fb950', margin: '5px 0' }}>
-                  {predefinedTimer}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Timer Section */}
+          <div className="lg:col-span-2">
+            <div className="bg-gray-800 rounded-2xl p-8 shadow-2xl">
+              <div className="flex flex-col items-center">
+                {/* Circular Timer */}
+                <div className="relative w-80 h-80 mb-8">
+                  <CircularProgressbar
+                    value={getProgressPercentage()}
+                    text={formatTime(cycleSession?.timeLeft || 0)}
+                    styles={buildStyles({
+                      pathColor: getProgressColor(),
+                      textColor: '#ffffff',
+                      trailColor: '#374151',
+                      strokeLinecap: 'round',
+                    })}
+                    strokeWidth={8}
+                  />
+                  
+                  {/* Phase indicator */}
+                  {cycleSession && (
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-16">
+                      <div className={`text-lg font-semibold ${
+                        cycleSession.currentPhase === 'focus' ? 'text-forest-green' : 'text-yellow-400'
+                      }`}>
+                        {cycleSession.currentPhase === 'focus' ? '🎯 Focus' : '☕ Break'}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              {predefinedSession.breakStartTime && (
-                <div style={{ fontSize: '14px', color: '#8b949e' }}>
-                  Break started at: {predefinedSession.breakStartTime}
-                </div>
-              )}
-            </div>
-          )}
-          
-          <div className={`status ${predefinedSession?.isActive ? 'active' : 'inactive'}`}>
-            {predefinedSession?.isActive ? 'Session Active' : 'Session Inactive'}
-          </div>
-          
-          {!predefinedSession?.isActive ? (
-            <button className="button" onClick={startPredefinedSession}>
-              Start 2-Hour Session
-            </button>
-          ) : (
-            <button className="button stop" onClick={stopPredefinedSession}>
-              Stop Session
-            </button>
-          )}
-        </div>
-      </div>
 
-      {/* History Section */}
-      <div className="history-section">
-        <h2>Session History</h2>
-        <div className="history-content">
-          {sessionHistory.length > 0 ? (
-            <>
-              <div className="history-grid">
-                {sessionHistory.map((session, index) => (
-                  <div key={index} className="history-item">
-                    <h3>Session {sessionHistory.length - index}</h3>
-                    <p><strong>Date:</strong> {session.date}</p>
-                    <p><strong>Started:</strong> {session.startTime}</p>
-                    {session.stopTime && (
-                      <>
-                        <p><strong>Stopped:</strong> {session.stopTime}</p>
-                        <p className="duration"><strong>Duration:</strong> {session.duration}</p>
-                      </>
-                    )}
-                  </div>
-                ))}
+                {/* Controls */}
+                <div className="flex gap-4 mb-6">
+                  {!cycleSession ? (
+                    <button
+                      onClick={startFocusSession}
+                      className="bg-forest-green hover:bg-forest-dark text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                      Start Focus Session
+                    </button>
+                  ) : (
+                    <>
+                      {cycleSession.isPaused ? (
+                        <button
+                          onClick={resumeSession}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                          Resume
+                        </button>
+                      ) : (
+                        <button
+                          onClick={pauseSession}
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        >
+                          Pause
+                        </button>
+                      )}
+                      <button
+                        onClick={stopSession}
+                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                      >
+                        Stop
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* Status */}
+                <div className={`text-lg font-medium ${
+                  cycleSession?.isActive ? 'text-forest-green' : 'text-gray-400'
+                }`}>
+                  {cycleSession?.isActive 
+                    ? (cycleSession.isPaused ? 'Session Paused' : 'Session Active')
+                    : 'No active session'
+                  }
+                </div>
               </div>
-              <div className="history-actions">
-                <button 
-                  className="button" 
+            </div>
+
+            {/* Session History */}
+            <div className="bg-gray-800 rounded-2xl p-6 mt-8 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Session History</h2>
+                <button
                   onClick={clearHistory}
-                  style={{ maxWidth: '200px', margin: '0 auto' }}
+                  className="text-gray-400 hover:text-red-400 transition-colors duration-300"
                 >
                   Clear History
                 </button>
               </div>
-            </>
-          ) : (
-            <div className="empty-history">
-              No study sessions recorded yet. Start your first session to see your history here!
+              
+              <div className="space-y-3">
+                {sessionHistory.length > 0 ? (
+                  sessionHistory.map((session) => (
+                    <div
+                      key={session.id}
+                      className="bg-gray-700 rounded-xl p-4 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`text-2xl ${
+                          session.type === 'focus' ? 'text-forest-green' : 'text-yellow-400'
+                        }`}>
+                          {session.type === 'focus' ? '🎯' : '☕'}
+                        </span>
+                        <div>
+                          <div className="font-medium">
+                            {session.type === 'focus' ? 'Focus Session' : 'Break Session'}
+                          </div>
+                          <div className="text-sm text-gray-400">{session.date}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold">{session.duration}</div>
+                        <div className="text-sm text-gray-400">
+                          {session.startTime} - {session.endTime}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-400 py-8">
+                    No sessions recorded yet. Start your first focus session!
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Forest Section */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl h-fit">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">🌲 Your Forest</h2>
+                <button
+                  onClick={clearForest}
+                  className="text-gray-400 hover:text-red-400 transition-colors duration-300"
+                >
+                  Clear Forest
+                </button>
+              </div>
+              
+              <div className="text-center mb-4">
+                <div className="text-3xl font-bold text-forest-green">{forest.length}</div>
+                <div className="text-sm text-gray-400">Plants Grown</div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                {forest.map((plant) => (
+                  <div
+                    key={plant.id}
+                    className="bg-gray-700 rounded-xl p-3 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
+                  >
+                    <div className="text-2xl mb-1">
+                      {plantTypes.find(p => p.type === plant.type)?.emoji || '🌱'}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {new Date(plant.plantedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {forest.length === 0 && (
+                <div className="text-center text-gray-400 py-8">
+                  <div className="text-4xl mb-2">🌱</div>
+                  <div>Complete focus sessions to grow your forest!</div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Break Reminder Modal */}
       {showBreakReminder && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Time for a Break!</h3>
-            <p>You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.</p>
-            <button className="modal-button" onClick={dismissBreakReminder}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+            <h3 className="text-2xl font-bold mb-4 text-center">⏰ Time for a Break!</h3>
+            <p className="text-gray-300 mb-6 text-center">
+              You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.
+            </p>
+            <button
+              onClick={dismissBreakReminder}
+              className="w-full bg-forest-green hover:bg-forest-dark text-white py-3 rounded-xl font-semibold transition-colors duration-300"
+            >
               Got it!
             </button>
           </div>
@@ -450,11 +484,16 @@ const App: React.FC = () => {
 
       {/* Eye Reminder Modal */}
       {showEyeReminder && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>30-30-30 Rule</h3>
-            <p>Look at something 30 feet away for 30 seconds to reduce eye strain.</p>
-            <button className="modal-button" onClick={dismissEyeReminder}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+            <h3 className="text-2xl font-bold mb-4 text-center">👁️ 30-30-30 Rule</h3>
+            <p className="text-gray-300 mb-6 text-center">
+              Look at something 30 feet away for 30 seconds to reduce eye strain.
+            </p>
+            <button
+              onClick={dismissEyeReminder}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-colors duration-300"
+            >
               Dismiss
             </button>
           </div>
