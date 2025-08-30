@@ -95,6 +95,13 @@ const App: React.FC = () => {
     localStorage.setItem('reminderState', JSON.stringify(reminderState));
   }, [cycleSession, sessionHistory, forest, reminderState]);
 
+  // Start eye countdown when modal opens
+  useEffect(() => {
+    if (showEyeReminder && eyeReminderCountdown === 30) {
+      startEyeCountdown();
+    }
+  }, [showEyeReminder]);
+
   const formatTime = (milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -141,6 +148,7 @@ const App: React.FC = () => {
       setEyeReminderCountdown(30);
       playAlarm();
       setReminderState(prev => ({ ...prev, lastReminder: currentTime, dismissed: false }));
+      startEyeCountdown();
     }, 30 * 60 * 1000); // Every 30 minutes
   };
 
@@ -152,6 +160,10 @@ const App: React.FC = () => {
     if (eyeReminderIntervalRef.current) {
       clearInterval(eyeReminderIntervalRef.current);
       eyeReminderIntervalRef.current = null;
+    }
+    if (eyeCountdownRef.current) {
+      clearInterval(eyeCountdownRef.current);
+      eyeCountdownRef.current = null;
     }
   };
 
@@ -273,6 +285,23 @@ const App: React.FC = () => {
     setReminderState(prev => ({ ...prev, dismissed: true }));
   };
 
+  const startEyeCountdown = () => {
+    setEyeReminderCountdown(30);
+    eyeCountdownRef.current = setInterval(() => {
+      setEyeReminderCountdown(prev => {
+        if (prev <= 1) {
+          if (eyeCountdownRef.current) {
+            clearInterval(eyeCountdownRef.current);
+            eyeCountdownRef.current = null;
+          }
+          setShowEyeReminder(false);
+          return 30;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   const clearHistory = () => {
     setSessionHistory([]);
   };
@@ -374,6 +403,16 @@ const App: React.FC = () => {
                     : 'No active session'
                   }
                 </div>
+
+                {/* 30-30-30 Rule Status */}
+                {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && (
+                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-xl">
+                    <div className="text-sm text-blue-300 mb-1">👁️ 30-30-30 Rule Active</div>
+                    <div className="text-xs text-blue-400">
+                      Every 30 minutes, look at something 30 feet away for 30 seconds
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -497,6 +536,17 @@ const App: React.FC = () => {
             <p className="text-gray-300 mb-6 text-center">
               Look at something 30 feet away for 30 seconds to reduce eye strain.
             </p>
+            
+            {/* Countdown Timer */}
+            <div className="text-center mb-6">
+              <div className="text-4xl font-bold text-blue-400 mb-2">
+                {eyeReminderCountdown}s
+              </div>
+              <div className="text-sm text-gray-400">
+                Time remaining
+              </div>
+            </div>
+            
             <button
               onClick={dismissEyeReminder}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-colors duration-300"
