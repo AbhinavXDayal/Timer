@@ -52,10 +52,7 @@ interface CycleSession {
   isPaused: boolean;
 }
 
-interface StarItem {
-  id: string;
-  createdAt: string;
-}
+//
 
 const FOCUS_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 const BREAK_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
@@ -152,6 +149,7 @@ const App: React.FC = () => {
   ];
 
   // Load data from localStorage
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const savedCycleSession = localStorage.getItem('cycleSession');
     const savedHistory = localStorage.getItem('sessionHistory');
@@ -254,7 +252,8 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Initialize YouTube player for Chill Music and set volume to 50%
+  // Initialize YouTube player for Chill Music
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const setupYouTube = () => {
       if (youtubePlayerRef.current && youtubePlayerRef2.current) return;
@@ -272,7 +271,7 @@ const App: React.FC = () => {
                   if (!Number.isNaN(saved) && saved > 0) {
                     event.target.seekTo(saved, true);
                   }
-                  event.target.setVolume(50);
+                  event.target.setVolume(30);
 
                   // Try to autoplay; if blocked, play muted. We'll unmute on session start
                   const tryPlay = async () => {
@@ -316,7 +315,7 @@ const App: React.FC = () => {
                   if (!Number.isNaN(saved) && saved > 0) {
                     event.target.seekTo(saved, true);
                   }
-                  event.target.setVolume(50);
+                  event.target.setVolume(30);
                   const tryPlay = async () => {
                     try {
                       event.target.playVideo();
@@ -393,6 +392,7 @@ const App: React.FC = () => {
   }, []);
 
   // Save data to localStorage + update Magic Sync Link in URL + push to GUN
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (cycleSession) {
       localStorage.setItem('cycleSession', JSON.stringify(cycleSession));
@@ -825,7 +825,7 @@ const App: React.FC = () => {
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
               </div>
-              <p className="text-xs text-gray-400 mb-3">Volume is set to about 50% so tutorials stay audible.</p>
+                             <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
               <div className="rounded-xl overflow-hidden mb-3">
                 <iframe
                   id="chillYoutube"
