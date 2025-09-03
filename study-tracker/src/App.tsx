@@ -158,19 +158,7 @@ const App: React.FC = () => {
     const savedEyeRuleTimer = localStorage.getItem('eyeRuleTimer');
     const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
 
-    // Magic Sync Link: if URL hash contains data, prefer it
-    try {
-      if (window.location.hash.startsWith('#data=')) {
-        const compressed = window.location.hash.slice(6);
-        const json = LZString.decompressFromEncodedURIComponent(compressed);
-        if (json) {
-          const payload = JSON.parse(json);
-          if (payload.sessionHistory) setSessionHistory(payload.sessionHistory);
-          if (payload.forest) setForest(payload.forest);
-          if (payload.reminderState) setReminderState(payload.reminderState);
-        }
-      }
-    } catch (_) {}
+    // Removed URL-hash sync to keep URLs short and rely on cloud sync only
 
     // Initialize GUN
     try {
@@ -391,7 +379,7 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Save data to localStorage + update Magic Sync Link in URL + push to GUN
+  // Save data to localStorage + push to GUN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (cycleSession) {
@@ -403,14 +391,7 @@ const App: React.FC = () => {
     localStorage.setItem('eyeRuleTimer', JSON.stringify(eyeRuleTimer));
     localStorage.setItem('eyeRuleActive', JSON.stringify(eyeRuleActive));
 
-    try {
-      const payload = { sessionHistory, forest, reminderState };
-      const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
-      const newHash = `#data=${compressed}`;
-      if (window.location.hash !== newHash) {
-        window.history.replaceState(null, '', newHash);
-      }
-    } catch (_) {}
+    // URL-hash compression removed to avoid long links
 
     // Push to GUN
     try {
