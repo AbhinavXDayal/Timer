@@ -664,18 +664,18 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
-      <div className="max-w-7xl mx-auto h-full">
+      <div className="mx-auto h-full" style={{maxWidth: '1400px'}}>
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
           🌌 Space Focus
         </h1>
 
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-                         <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30">
+                         <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                                <div className="relative w-64 h-64 mb-3">
+                                                                 <div className="relative w-64 h-56 mb-2">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -704,7 +704,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Progress boxes under timer (minimal) */}
-                <div className="w-full max-w-md mx-auto mb-3">
+                                 <div className="w-full max-w-lg mx-auto mb-2">
                   <div className="dm-grid">
                     {Array.from({ length: 48 }).map((_, idx) => {
                       const fillThreshold = (idx + 1) / 48 * 100;
@@ -715,7 +715,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Controls */}
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-2">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
