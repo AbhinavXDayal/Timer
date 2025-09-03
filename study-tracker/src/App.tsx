@@ -88,6 +88,10 @@ const App: React.FC = () => {
   const playChillMusic = () => {
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.playVideo) {
+        if (youtubePlayerRef.current.unMute) {
+          youtubePlayerRef.current.unMute();
+          if (youtubePlayerRef.current.setVolume) youtubePlayerRef.current.setVolume(50);
+        }
         youtubePlayerRef.current.playVideo();
       }
     } catch (_) {}
@@ -135,6 +139,7 @@ const App: React.FC = () => {
           if (remainingMs > 0) {
             setCycleSession(updatedSession);
             startTimer(updatedSession);
+            playChillMusic();
           } else {
             // Session would have completed while the app was closed
             setCycleSession(null);
@@ -189,7 +194,7 @@ const App: React.FC = () => {
                 }
                 event.target.setVolume(50);
 
-                // Try to autoplay; if blocked, play muted and wait for user interaction to unmute
+                // Try to autoplay; if blocked, play muted. We'll unmute on session start
                 const tryPlay = async () => {
                   try {
                     event.target.playVideo();
@@ -201,19 +206,6 @@ const App: React.FC = () => {
                   }
                 };
                 tryPlay();
-
-                const handleFirstInteraction = () => {
-                  try {
-                    event.target.unMute();
-                    event.target.setVolume(50);
-                  } catch (_) {}
-                  window.removeEventListener('click', handleFirstInteraction);
-                  window.removeEventListener('keydown', handleFirstInteraction);
-                  window.removeEventListener('touchstart', handleFirstInteraction);
-                };
-                window.addEventListener('click', handleFirstInteraction, { once: true });
-                window.addEventListener('keydown', handleFirstInteraction, { once: true });
-                window.addEventListener('touchstart', handleFirstInteraction, { once: true });
               } catch (_) {}
             },
             onStateChange: (event: any) => {
