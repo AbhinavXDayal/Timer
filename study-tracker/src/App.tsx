@@ -232,7 +232,7 @@ const App: React.FC = () => {
           setCycleSession(session);
         }
       } else {
-      setCycleSession(session);
+        setCycleSession(session);
       }
     }
 
@@ -698,13 +698,13 @@ const App: React.FC = () => {
                         cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
                         {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-            </div>
-            </div>
-          )}
-          </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-                {/* Minimal dot boxes under timer */}
-                <div className="w-full max-w-md mx-auto mb-2">
+                {/* Progress boxes under timer (minimal) */}
+                <div className="w-full max-w-md mx-auto mb-3">
                   <div className="dm-grid">
                     {Array.from({ length: 48 }).map((_, idx) => {
                       const fillThreshold = (idx + 1) / 48 * 100;
@@ -713,43 +713,42 @@ const App: React.FC = () => {
                     })}
                   </div>
                 </div>
-          
+
                 {/* Controls */}
-                <div className="flex justify-center mb-4">
+                <div className="flex items-center gap-3 mb-4">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
-                      className="px-6 py-2 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition-colors"
+                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                     >
-                      Start
+                      Start Focus Session
                     </button>
                   ) : (
-                    <div className="inline-flex items-center rounded-full overflow-hidden border border-gray-700/60 bg-gray-800/60">
+                    <>
                       {cycleSession.isPaused ? (
                         <button
                           onClick={resumeSession}
-                          className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
+                          className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
                         >
                           Resume
-            </button>
-          ) : (
+                        </button>
+                      ) : (
                         <button
                           onClick={pauseSession}
-                          className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
+                          className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
                         >
                           Pause
-            </button>
-          )}
-                      <div className="h-6 w-px bg-gray-700/60" />
+                        </button>
+                      )}
                       <button
                         onClick={stopSession}
-                        className="px-5 py-2 text-gray-300 hover:text-red-300 hover:bg-gray-700/60 transition-colors"
+                        className="text-gray-400 hover:text-red-400 underline-offset-4 hover:underline transition-colors duration-200"
                       >
                         Stop
                       </button>
-                    </div>
-                    )}
-                  </div>
+                    </>
+                  )}
+                </div>
 
                 {/* Status */}
                 <div className={`text-sm font-medium ${
@@ -897,12 +896,12 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-              {forest.length === 0 && (
+                            {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
                   <div className="text-3xl mb-2">✨</div>
                   <div className="text-sm">Complete focus sessions to light up your space!</div>
-            </div>
-          )}
+                </div>
+              )}
             </div>
           </div>
         </div>
