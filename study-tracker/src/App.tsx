@@ -452,10 +452,10 @@ const App: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-8 shadow-lg border border-gray-700/30">
+            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                <div className="relative w-80 h-80 mb-8">
+                <div className="relative w-72 h-72 mb-6">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={formatTime(cycleSession?.timeLeft || 0)}
