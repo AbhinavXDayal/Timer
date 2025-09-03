@@ -664,7 +664,7 @@ const App: React.FC = () => {
                          <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                                 <div className="relative w-60 h-60 mb-3">
+                                <div className="relative w-64 h-64 mb-3">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -690,6 +690,19 @@ const App: React.FC = () => {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Dot-matrix panel under timer */}
+                <div className="dot-matrix w-full max-w-md mx-auto mb-3">
+                  <div className="dm-text text-center text-xs sm:text-sm">
+                    {cycleSession ? 'Time Remaining' : 'Ready'} • {formatTime(cycleSession?.timeLeft || 0)}
+                  </div>
+                  <div className="mt-2 h-2 rounded bg-gray-700/50 overflow-hidden">
+                    <div
+                      className="h-full bg-forest-green"
+                      style={{ width: `${getProgressPercentage()}%` }}
+                    />
+                  </div>
                 </div>
           
                 {/* Controls */}
