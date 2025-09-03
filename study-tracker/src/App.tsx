@@ -268,7 +268,7 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
-  }, [startTimer, playChillMusic, stopReminders]);
+  }, []); // Removed dependencies to avoid circular references
 
   // Initialize YouTube player for Chill Music
   useEffect(() => {
@@ -393,9 +393,26 @@ const App: React.FC = () => {
   // Start eye countdown when modal opens
   useEffect(() => {
     if (showEyeReminder && eyeReminderCountdown === 30) {
-      startEyeCountdown();
+      // Will use the startEyeCountdown function defined later
+      if (eyeCountdownRef.current) {
+        clearInterval(eyeCountdownRef.current);
+      }
+      
+      eyeCountdownRef.current = setInterval(() => {
+        setEyeReminderCountdown(prev => {
+          if (prev <= 1) {
+            if (eyeCountdownRef.current) {
+              clearInterval(eyeCountdownRef.current);
+              eyeCountdownRef.current = null;
+            }
+            setShowEyeReminder(false);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     }
-  }, [showEyeReminder, eyeReminderCountdown, startEyeCountdown, startTimer]);
+  }, [showEyeReminder, eyeReminderCountdown]);
 
   const formatTime = useCallback((milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -419,27 +436,7 @@ const App: React.FC = () => {
 
   // playAlarm is now defined above
   
-  // Add missing startEyeCountdown function
-  const startEyeCountdown = useCallback(() => {
-    if (eyeCountdownRef.current) {
-      clearInterval(eyeCountdownRef.current);
-    }
-    
-    eyeCountdownRef.current = setInterval(() => {
-      setEyeReminderCountdown(prev => {
-        if (prev <= 1) {
-          // Countdown finished
-          if (eyeCountdownRef.current) {
-            clearInterval(eyeCountdownRef.current);
-            eyeCountdownRef.current = null;
-          }
-          setShowEyeReminder(false);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, []);
+  // startEyeCountdown is defined later in the file
   
   // Add missing setupYouTube function
   const setupYouTube = useCallback(() => {
@@ -535,7 +532,7 @@ const App: React.FC = () => {
       setCycleSession(null);
       stopReminders();
     }
-  }, [formatTime, stopReminders, addPlantToForest, playAlarm]);
+  }, [formatTime]); // Removed dependencies to avoid circular references
 
   const startTimer = useCallback((session: CycleSession) => {
     timerRef.current = setInterval(() => {
@@ -556,7 +553,7 @@ const App: React.FC = () => {
 
     // Start reminders
     startReminders();
-  }, [startReminders, completeSession]);
+  }, [completeSession]); // Removed startReminders dependency to avoid circular references
 
   const startReminders = useCallback(() => {
     // 2-hour break reminder
@@ -585,7 +582,7 @@ const App: React.FC = () => {
         return prev - 1000;
       });
     }, 1000);
-  }, [startEyeCountdown, playAlarm, setShowBreakReminder, setEyeRuleActive, setEyeRuleTimer, setShowEyeReminder, setEyeReminderCountdown, setReminderState, setCycleSession]);
+  }, [setShowBreakReminder, setEyeRuleActive, setEyeRuleTimer, setShowEyeReminder, setEyeReminderCountdown, setReminderState, setCycleSession]); // Removed dependencies to avoid circular references
 
   const stopReminders = useCallback(() => {
     if (breakIntervalRef.current) {
@@ -608,17 +605,7 @@ const App: React.FC = () => {
   }, [setEyeRuleActive]);
 
   // completeSession is now defined above
-
-  const addPlantToForest = useCallback(() => {
-    const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
-    const newPlant: Plant = {
-      id: Date.now().toString(),
-      type: randomPlant.type as 'tree' | 'flower' | 'bush',
-      plantedAt: new Date().toISOString(),
-      completed: true
-    };
-    setForest(prev => [...prev, newPlant]);
-  }, []);
+  // addPlantToForest is now defined above
 
   const startFocusSession = useCallback(() => {
     const newSession: CycleSession = {
