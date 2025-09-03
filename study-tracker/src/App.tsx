@@ -3,6 +3,9 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
 import LZString from 'lz-string';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const GunLib: any = require('gun');
+require('gun/sea');
 
 // Minimal local star icon component (BsStars-like)
 const BsStars = ({ className = 'w-6 h-6' }: { className?: string }) => (
@@ -77,6 +80,10 @@ const App: React.FC = () => {
   const youtubeSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef2 = useRef<any>(null);
   const youtubeSaveIntervalRef2 = useRef<NodeJS.Timeout | null>(null);
+
+  // GUN peer setup for no-login sync
+  const gunRef = useRef<any>(null);
+  const spaceIdRef = useRef<string>('');
 
   const saveChillMusicTime = () => {
     try {
@@ -165,6 +172,38 @@ const App: React.FC = () => {
           if (payload.reminderState) setReminderState(payload.reminderState);
         }
       }
+    } catch (_) {}
+
+    // Initialize GUN
+    try {
+      const gun = GunLib({ peers: ['https://gun-manhattan.herokuapp.com/gun'] });
+      gunRef.current = gun;
+      // Create or read spaceId
+      const url = new URL(window.location.href);
+      let spaceId = url.searchParams.get('space');
+      if (!spaceId) {
+        spaceId = Math.random().toString(36).slice(2, 10);
+        url.searchParams.set('space', spaceId);
+        history.replaceState(null, '', url.toString());
+      }
+      spaceIdRef.current = spaceId;
+
+      const node = gun.get('space-focus').get(spaceId);
+      node.get('sessionHistory').once((d: any) => {
+        if (d) {
+          try { setSessionHistory(JSON.parse(d)); } catch (_) {}
+        }
+      });
+      node.get('forest').once((d: any) => {
+        if (d) {
+          try { setForest(JSON.parse(d)); } catch (_) {}
+        }
+      });
+      node.get('reminderState').once((d: any) => {
+        if (d) {
+          try { setReminderState(JSON.parse(d)); } catch (_) {}
+        }
+      });
     } catch (_) {}
 
     if (savedCycleSession) {
@@ -353,7 +392,7 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Save data to localStorage + update Magic Sync Link in URL
+  // Save data to localStorage + update Magic Sync Link in URL + push to GUN
   useEffect(() => {
     if (cycleSession) {
       localStorage.setItem('cycleSession', JSON.stringify(cycleSession));
@@ -370,6 +409,16 @@ const App: React.FC = () => {
       const newHash = `#data=${compressed}`;
       if (window.location.hash !== newHash) {
         history.replaceState(null, '', newHash);
+      }
+    } catch (_) {}
+
+    // Push to GUN
+    try {
+      if (gunRef.current && spaceIdRef.current) {
+        const node = gunRef.current.get('space-focus').get(spaceIdRef.current);
+        node.get('sessionHistory').put(JSON.stringify(sessionHistory));
+        node.get('forest').put(JSON.stringify(forest));
+        node.get('reminderState').put(JSON.stringify(reminderState));
       }
     } catch (_) {}
   }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive]);
