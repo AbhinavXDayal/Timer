@@ -439,7 +439,7 @@ const App: React.FC = () => {
 
   const getProgressColor = () => {
     if (!cycleSession) return '#3b82f6';
-    return cycleSession.currentPhase === 'focus' ? '#22c55e' : '#f59e0b';
+    return cycleSession.currentPhase === 'focus' ? '#a08dcc' : '#f59e0b';
   };
 
   return (

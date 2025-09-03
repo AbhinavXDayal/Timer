@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'forest-green': '#22c55e',
-        'forest-dark': '#15803d',
-        'forest-light': '#4ade80',
+        'forest-green': '#a08dcc',
+        'forest-dark': '#8f79c5',
+        'forest-light': '#c3b2ea',
       },
       animation: {
         'grow': 'grow 0.5s ease-out',
