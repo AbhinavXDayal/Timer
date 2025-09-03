@@ -492,7 +492,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
-          🌱 Study Forest
+          🌌 Study Forest
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-stretch">
@@ -575,7 +575,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 mt-6 shadow-lg border border-gray-700/30 flex-1">
+            <div className="bg-gray-800/50 rounded-2xl p-5 mt-4 shadow-lg border border-gray-700/30 flex-1">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Session History</h2>
                 <button 
@@ -640,9 +640,9 @@ const App: React.FC = () => {
             )}
 
             {/* Chill Music */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">🎧 Chill Music</h2>
+            <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <h2 className="text-lg font-bold">🎧 Chill Music</h2>
               </div>
               <p className="text-xs text-gray-400 mb-3">Volume is set to about 50% so tutorials stay audible.</p>
               <div className="rounded-xl overflow-hidden">
@@ -661,9 +661,9 @@ const App: React.FC = () => {
             </div>
 
             {/* Forest Section */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 flex-1">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">🌲 Your Forest</h2>
+            <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30 flex-1">
+                              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">🌌 Your Forest</h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
