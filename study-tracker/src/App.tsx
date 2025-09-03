@@ -663,7 +663,7 @@ const App: React.FC = () => {
                          <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                                 <div className="relative w-64 h-64 mb-4">
+                                 <div className="relative w-60 h-60 mb-3">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={formatTime(cycleSession?.timeLeft || 0)}
