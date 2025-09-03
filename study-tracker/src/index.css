@@ -50,6 +50,24 @@ body {
   text-shadow: 0 0 2px rgba(229,231,235,0.35);
 }
 
+/* Tiny box matrix under the timer */
+.dm-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 6px);
+  gap: 4px;
+  justify-content: center;
+}
+.dm-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: rgba(148,163,184,0.35); /* slate-300/35 */
+}
+.dm-dot.filled {
+  background: #a08dcc; /* theme accent */
+  box-shadow: 0 0 4px rgba(160,141,204,0.6);
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

@@ -693,11 +693,12 @@ const App: React.FC = () => {
                   <div className="dm-text text-center text-xs sm:text-sm">
                     {cycleSession ? 'Time Remaining' : 'Ready'} • {formatTime(cycleSession?.timeLeft || 0)}
                   </div>
-                  <div className="mt-2 h-2 rounded bg-gray-700/50 overflow-hidden">
-                    <div
-                      className="h-full bg-forest-green"
-                      style={{ width: `${getProgressPercentage()}%` }}
-                    />
+                  <div className="mt-3 dm-grid">
+                    {Array.from({ length: 48 }).map((_, idx) => {
+                      const fillThreshold = (idx + 1) / 48 * 100;
+                      const filled = getProgressPercentage() >= fillThreshold;
+                      return <div key={idx} className={`dm-dot ${filled ? 'filled' : ''}`}></div>;
+                    })}
                   </div>
                 </div>
           
