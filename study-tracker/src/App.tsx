@@ -3,6 +3,14 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
 
+// Allow accessing YouTube API on window
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: any;
+  }
+}
+
 interface Session {
   id: string;
   type: 'focus' | 'break';
@@ -47,6 +55,7 @@ const App: React.FC = () => {
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeCountdownRef = useRef<NodeJS.Timeout | null>(null);
   const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const youtubePlayerRef = useRef<any>(null);
 
   // Plant types for gamification
   const plantTypes = [
@@ -115,6 +124,48 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
+  }, []);
+
+  // Initialize YouTube player for Chill Music and set volume to 50%
+  useEffect(() => {
+    const setupYouTube = () => {
+      if (youtubePlayerRef.current) return;
+      const iframe = document.getElementById('chillYoutube');
+      if (!iframe) return;
+      if (window.YT && window.YT.Player) {
+        youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
+          events: {
+            onReady: (event: any) => {
+              try {
+                event.target.setVolume(50);
+              } catch (_) {}
+            }
+          }
+        });
+      }
+    };
+
+    // If API already loaded
+    if (window.YT && window.YT.Player) {
+      setupYouTube();
+      return;
+    }
+
+    // Inject API script once
+    const existingScript = document.getElementById('youtube-iframe-api');
+    if (!existingScript) {
+      const tag = document.createElement('script');
+      tag.id = 'youtube-iframe-api';
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.body.appendChild(tag);
+    }
+
+    // YouTube API global callback
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prev === 'function') prev();
+      setupYouTube();
+    };
   }, []);
 
   // Save data to localStorage
@@ -527,14 +578,18 @@ const App: React.FC = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">🎧 Chill Music</h2>
               </div>
-              <p className="text-xs text-gray-400 mb-3">Tip: Set the Spotify player volume to about 50% so you can hear tutorials.</p>
+              <p className="text-xs text-gray-400 mb-3">Volume is set to about 50% so tutorials stay audible.</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://open.spotify.com/embed/playlist/0oGur0LHEuC4FJMSBKuSIW?utm_source=generator"
+                  id="chillYoutube"
                   width="100%"
-                  height="152"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="lazy"
+                  height="215"
+                  src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
                 ></iframe>
               </div>
             </div>
