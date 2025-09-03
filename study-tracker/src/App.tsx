@@ -250,7 +250,7 @@ const App: React.FC = () => {
       if (window.YT && window.YT.Player) {
         if (iframe && !youtubePlayerRef.current) {
           youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1 },
             events: {
               onReady: (event: any) => {
                 try {
@@ -295,7 +295,7 @@ const App: React.FC = () => {
         }
         if (iframe2 && !youtubePlayerRef2.current) {
           youtubePlayerRef2.current = new window.YT.Player('chillYoutube2', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1 },
             events: {
               onReady: (event: any) => {
                 try {
