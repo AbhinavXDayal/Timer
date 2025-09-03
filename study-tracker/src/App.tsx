@@ -665,7 +665,6 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
-        <div className="bg-gray-800/30 rounded-2xl p-4 border border-gray-700/30">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
           🌌 Space Focus
         </h1>
@@ -713,7 +712,7 @@ const App: React.FC = () => {
                       return <div key={idx} className={`dm-dot ${filled ? 'filled' : ''}`}></div>;
                     })}
                   </div>
-          </div>
+                </div>
           
                 {/* Controls */}
                 <div className="flex justify-center mb-4">
@@ -955,8 +954,6 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
-  </div>
     </div>
   );
 };
