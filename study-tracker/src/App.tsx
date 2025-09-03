@@ -405,6 +405,138 @@ const App: React.FC = () => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
+  // Forward declare functions to avoid circular dependencies
+  const addPlantToForest = useCallback(() => {
+    const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
+    const newPlant: Plant = {
+      id: Date.now().toString(),
+      type: randomPlant.type as 'tree' | 'flower' | 'bush',
+      plantedAt: new Date().toISOString(),
+      completed: true
+    };
+    setForest(prev => [...prev, newPlant]);
+  }, []);
+
+  // playAlarm is now defined above
+  
+  // Add missing startEyeCountdown function
+  const startEyeCountdown = useCallback(() => {
+    if (eyeCountdownRef.current) {
+      clearInterval(eyeCountdownRef.current);
+    }
+    
+    eyeCountdownRef.current = setInterval(() => {
+      setEyeReminderCountdown(prev => {
+        if (prev <= 1) {
+          // Countdown finished
+          if (eyeCountdownRef.current) {
+            clearInterval(eyeCountdownRef.current);
+            eyeCountdownRef.current = null;
+          }
+          setShowEyeReminder(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+  
+  // Add missing setupYouTube function
+  const setupYouTube = useCallback(() => {
+    if (window.YT) return;
+    
+    // Create YouTube script
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    
+    // Setup callback when API is ready
+    window.onYouTubeIframeAPIReady = () => {
+      if (youtubePlayerRef.current) return;
+      
+      const savedTime = localStorage.getItem('chillMusicTime');
+      const startSeconds = savedTime ? parseInt(savedTime, 10) : 0;
+      
+      youtubePlayerRef.current = new window.YT.Player('youtube-player', {
+        height: '200',
+        width: '100%',
+        videoId: currentVideoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          start: startSeconds,
+          mute: 1, // Start muted to avoid autoplay restrictions
+        },
+        events: {
+          onReady: (event: any) => {
+            // Setup save interval
+            if (!youtubeSaveIntervalRef.current) {
+              youtubeSaveIntervalRef.current = setInterval(saveChillMusicTime, 30000);
+            }
+          },
+        },
+      });
+    };
+  }, [currentVideoId, saveChillMusicTime]);
+
+  const completeSession = useCallback((session: CycleSession) => {
+    const now = new Date();
+    const endTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
+
+    // Save completed session
+    const completedSession: Session = {
+      id: Date.now().toString(),
+      type: session.currentPhase,
+      startTime: new Date(session.startTime).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      endTime,
+      duration: formatTime(session.totalTime),
+      date: now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    };
+    
+    setSessionHistory(prev => [completedSession, ...prev.slice(0, 19)]); // Keep last 20 sessions
+
+    // Add plant to forest if it was a focus session
+    if (session.currentPhase === 'focus') {
+      addPlantToForest();
+    }
+
+    // Play alarm
+    playAlarm();
+
+    // Switch to next phase or complete cycle
+    if (session.currentPhase === 'focus') {
+      // Start break
+      const newSession: CycleSession = {
+        isActive: true,
+        currentPhase: 'break',
+        startTime: Date.now(),
+        timeLeft: BREAK_DURATION,
+        totalTime: BREAK_DURATION,
+        isPaused: false
+      };
+      setCycleSession(newSession);
+      startTimer(newSession);
+    } else {
+      // Break completed, cycle finished
+      setCycleSession(null);
+      stopReminders();
+    }
+  }, [formatTime, stopReminders, addPlantToForest, playAlarm]);
+
   const startTimer = useCallback((session: CycleSession) => {
     timerRef.current = setInterval(() => {
       setCycleSession(prev => {
@@ -475,62 +607,7 @@ const App: React.FC = () => {
     setEyeRuleActive(false);
   }, [setEyeRuleActive]);
 
-  const completeSession = useCallback((session: CycleSession) => {
-    const now = new Date();
-    const endTime = now.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: false 
-    });
-
-    // Save completed session
-    const completedSession: Session = {
-      id: Date.now().toString(),
-      type: session.currentPhase,
-      startTime: new Date(session.startTime).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }),
-      endTime,
-      duration: formatTime(session.totalTime),
-      date: now.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    };
-    
-    setSessionHistory(prev => [completedSession, ...prev.slice(0, 19)]); // Keep last 20 sessions
-
-    // Add plant to forest if it was a focus session
-    if (session.currentPhase === 'focus') {
-      addPlantToForest();
-    }
-
-    // Play alarm
-    playAlarm();
-
-    // Switch to next phase or complete cycle
-    if (session.currentPhase === 'focus') {
-      // Start break
-      const newSession: CycleSession = {
-        isActive: true,
-        currentPhase: 'break',
-        startTime: Date.now(),
-        timeLeft: BREAK_DURATION,
-        totalTime: BREAK_DURATION,
-        isPaused: false
-      };
-      setCycleSession(newSession);
-      startTimer(newSession);
-    } else {
-      // Break completed, cycle finished
-      setCycleSession(null);
-      stopReminders();
-    }
-  }, [startTimer, stopReminders, addPlantToForest, formatTime]);
+  // completeSession is now defined above
 
   const addPlantToForest = useCallback(() => {
     const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
