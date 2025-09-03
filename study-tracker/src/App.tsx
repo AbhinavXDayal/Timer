@@ -182,7 +182,7 @@ const App: React.FC = () => {
       if (!spaceId) {
         spaceId = Math.random().toString(36).slice(2, 10);
         url.searchParams.set('space', spaceId);
-        history.replaceState(null, '', url.toString());
+        window.history.replaceState(null, '', url.toString());
       }
       spaceIdRef.current = spaceId;
 
@@ -408,7 +408,7 @@ const App: React.FC = () => {
       const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
       const newHash = `#data=${compressed}`;
       if (window.location.hash !== newHash) {
-        history.replaceState(null, '', newHash);
+        window.history.replaceState(null, '', newHash);
       }
     } catch (_) {}
 
