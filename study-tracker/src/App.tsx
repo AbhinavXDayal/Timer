@@ -75,6 +75,8 @@ const App: React.FC = () => {
   const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef = useRef<any>(null);
   const youtubeSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const youtubePlayerRef2 = useRef<any>(null);
+  const youtubeSaveIntervalRef2 = useRef<NodeJS.Timeout | null>(null);
 
   const saveChillMusicTime = () => {
     try {
@@ -82,6 +84,16 @@ const App: React.FC = () => {
       if (player && player.getCurrentTime) {
         const t = Math.floor(player.getCurrentTime());
         localStorage.setItem('chillMusicTime', String(t));
+      }
+    } catch (_) {}
+  };
+
+  const saveChillMusicTime2 = () => {
+    try {
+      const player = youtubePlayerRef2.current;
+      if (player && player.getCurrentTime) {
+        const t = Math.floor(player.getCurrentTime());
+        localStorage.setItem('chillMusicTime2', String(t));
       }
     } catch (_) {}
   };
@@ -96,12 +108,26 @@ const App: React.FC = () => {
         youtubePlayerRef.current.playVideo();
       }
     } catch (_) {}
+    try {
+      if (youtubePlayerRef2.current && youtubePlayerRef2.current.playVideo) {
+        if (youtubePlayerRef2.current.unMute) {
+          youtubePlayerRef2.current.unMute();
+          if (youtubePlayerRef2.current.setVolume) youtubePlayerRef2.current.setVolume(50);
+        }
+        youtubePlayerRef2.current.playVideo();
+      }
+    } catch (_) {}
   };
 
   const pauseChillMusic = () => {
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.pauseVideo) {
         youtubePlayerRef.current.pauseVideo();
+      }
+    } catch (_) {}
+    try {
+      if (youtubePlayerRef2.current && youtubePlayerRef2.current.pauseVideo) {
+        youtubePlayerRef2.current.pauseVideo();
       }
     } catch (_) {}
   };
@@ -192,55 +218,96 @@ const App: React.FC = () => {
   // Initialize YouTube player for Chill Music and set volume to 50%
   useEffect(() => {
     const setupYouTube = () => {
-      if (youtubePlayerRef.current) return;
+      if (youtubePlayerRef.current && youtubePlayerRef2.current) return;
       const iframe = document.getElementById('chillYoutube');
-      if (!iframe) return;
+      const iframe2 = document.getElementById('chillYoutube2');
       if (window.YT && window.YT.Player) {
-        youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
-          playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
-          events: {
-            onReady: (event: any) => {
-              try {
-                // Restore time and set initial volume
-                const saved = Number(localStorage.getItem('chillMusicTime') || '0');
-                if (!Number.isNaN(saved) && saved > 0) {
-                  event.target.seekTo(saved, true);
-                }
-                event.target.setVolume(50);
+        if (iframe && !youtubePlayerRef.current) {
+          youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+            events: {
+              onReady: (event: any) => {
+                try {
+                  // Restore time and set initial volume
+                  const saved = Number(localStorage.getItem('chillMusicTime') || '0');
+                  if (!Number.isNaN(saved) && saved > 0) {
+                    event.target.seekTo(saved, true);
+                  }
+                  event.target.setVolume(50);
 
-                // Try to autoplay; if blocked, play muted. We'll unmute on session start
-                const tryPlay = async () => {
-                  try {
-                    event.target.playVideo();
-                  } catch (_) {
+                  // Try to autoplay; if blocked, play muted. We'll unmute on session start
+                  const tryPlay = async () => {
                     try {
-                      event.target.mute();
                       event.target.playVideo();
-                    } catch (_) {}
+                    } catch (_) {
+                      try {
+                        event.target.mute();
+                        event.target.playVideo();
+                      } catch (_) {}
+                    }
+                  };
+                  tryPlay();
+                } catch (_) {}
+              },
+              onStateChange: (event: any) => {
+                // 1 = playing, 2 = paused, 0 = ended
+                try {
+                  if (event.data === 1) {
+                    if (youtubeSaveIntervalRef.current) clearInterval(youtubeSaveIntervalRef.current);
+                    youtubeSaveIntervalRef.current = setInterval(saveChillMusicTime, 5000);
+                  } else {
+                    saveChillMusicTime();
+                    if (youtubeSaveIntervalRef.current) {
+                      clearInterval(youtubeSaveIntervalRef.current);
+                      youtubeSaveIntervalRef.current = null;
+                    }
                   }
-                };
-                tryPlay();
-              } catch (_) {}
-            },
-            onStateChange: (event: any) => {
-              // 1 = playing, 2 = paused, 0 = ended
-              try {
-                if (event.data === 1) {
-                  // Start periodic save while playing
-                  if (youtubeSaveIntervalRef.current) clearInterval(youtubeSaveIntervalRef.current);
-                  youtubeSaveIntervalRef.current = setInterval(saveChillMusicTime, 5000);
-                } else {
-                  // Save once when paused/ended and clear interval
-                  saveChillMusicTime();
-                  if (youtubeSaveIntervalRef.current) {
-                    clearInterval(youtubeSaveIntervalRef.current);
-                    youtubeSaveIntervalRef.current = null;
-                  }
-                }
-              } catch (_) {}
+                } catch (_) {}
+              }
             }
-          }
-        });
+          });
+        }
+        if (iframe2 && !youtubePlayerRef2.current) {
+          youtubePlayerRef2.current = new window.YT.Player('chillYoutube2', {
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
+            events: {
+              onReady: (event: any) => {
+                try {
+                  const saved = Number(localStorage.getItem('chillMusicTime2') || '0');
+                  if (!Number.isNaN(saved) && saved > 0) {
+                    event.target.seekTo(saved, true);
+                  }
+                  event.target.setVolume(50);
+                  const tryPlay = async () => {
+                    try {
+                      event.target.playVideo();
+                    } catch (_) {
+                      try {
+                        event.target.mute();
+                        event.target.playVideo();
+                      } catch (_) {}
+                    }
+                  };
+                  tryPlay();
+                } catch (_) {}
+              },
+              onStateChange: (event: any) => {
+                try {
+                  if (event.data === 1) {
+                    if (youtubeSaveIntervalRef2.current) clearInterval(youtubeSaveIntervalRef2.current);
+                    youtubeSaveIntervalRef2.current = setInterval(saveChillMusicTime2, 5000);
+                  } else {
+                    saveChillMusicTime2();
+                    if (youtubeSaveIntervalRef2.current) {
+                      clearInterval(youtubeSaveIntervalRef2.current);
+                      youtubeSaveIntervalRef2.current = null;
+                    }
+                  }
+                } catch (_) {}
+              }
+            }
+          });
+        }
       }
     };
 
@@ -269,6 +336,7 @@ const App: React.FC = () => {
     // Save current time when navigating away
     const handleBeforeUnload = () => {
       saveChillMusicTime();
+      saveChillMusicTime2();
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -277,6 +345,10 @@ const App: React.FC = () => {
       if (youtubeSaveIntervalRef.current) {
         clearInterval(youtubeSaveIntervalRef.current);
         youtubeSaveIntervalRef.current = null;
+      }
+      if (youtubeSaveIntervalRef2.current) {
+        clearInterval(youtubeSaveIntervalRef2.current);
+        youtubeSaveIntervalRef2.current = null;
       }
     };
   }, []);
@@ -705,13 +777,26 @@ const App: React.FC = () => {
                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
               </div>
               <p className="text-xs text-gray-400 mb-3">Volume is set to about 50% so tutorials stay audible.</p>
-              <div className="rounded-xl overflow-hidden">
+              <div className="rounded-xl overflow-hidden mb-3">
                 <iframe
                   id="chillYoutube"
                   width="100%"
                   height="215"
                   src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
                   title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="rounded-xl overflow-hidden">
+                <iframe
+                  id="chillYoutube2"
+                  width="100%"
+                  height="215"
+                  src="https://www.youtube.com/embed/jMZGmWHDbqE?enablejsapi=1&modestbranding=1&rel=0"
+                  title="YouTube video player 2"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
