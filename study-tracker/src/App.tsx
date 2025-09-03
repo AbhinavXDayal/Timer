@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
@@ -85,7 +85,7 @@ const App: React.FC = () => {
   const gunRef = useRef<any>(null);
   const spaceIdRef = useRef<string>('');
 
-  const saveChillMusicTime = () => {
+  const saveChillMusicTime = useCallback(() => {
     try {
       const player = youtubePlayerRef.current;
       if (player && player.getCurrentTime) {
@@ -93,11 +93,11 @@ const App: React.FC = () => {
         localStorage.setItem('chillMusicTime', String(t));
       }
     } catch (_) {}
-  };
+  }, []);
 
 
 
-  const playChillMusic = () => {
+  const playChillMusic = useCallback(() => {
     userPausedRef.current = false;
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.playVideo) {
@@ -108,18 +108,18 @@ const App: React.FC = () => {
         youtubePlayerRef.current.playVideo();
       }
     } catch (_) {}
-  };
+  }, []);
 
-  const pauseChillMusic = () => {
+  const pauseChillMusic = useCallback(() => {
     userPausedRef.current = true;
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.pauseVideo) {
         youtubePlayerRef.current.pauseVideo();
       }
     } catch (_) {}
-  };
+  }, []);
 
-  const requestAutoplay = (player: any) => {
+  const requestAutoplay = useCallback((player: any) => {
     try {
       // Start muted for autoplay, then unmute on session start/resume
       player.mute && player.mute();
@@ -131,9 +131,9 @@ const App: React.FC = () => {
         }
       }, 600);
     } catch (_) {}
-  };
+  }, []);
 
-  const handleYoutubeSearch = async (e: React.FormEvent) => {
+  const handleYoutubeSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!youtubeSearchQuery.trim()) return;
 
@@ -164,7 +164,7 @@ const App: React.FC = () => {
     } catch (error) {
       console.error('YouTube search error:', error);
     }
-  };
+  }, [youtubeSearchQuery, setCurrentVideoId, setYoutubeSearchQuery]);
 
   // Plant types for gamification
   const plantTypes = [
@@ -397,15 +397,15 @@ const App: React.FC = () => {
     }
   }, [showEyeReminder, eyeReminderCountdown, startEyeCountdown]);
 
-  const formatTime = (milliseconds: number): string => {
+  const formatTime = useCallback((milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
-  const startTimer = (session: CycleSession) => {
+  const startTimer = useCallback((session: CycleSession) => {
     timerRef.current = setInterval(() => {
       setCycleSession(prev => {
         if (!prev) return null;
@@ -424,9 +424,9 @@ const App: React.FC = () => {
 
     // Start reminders
     startReminders();
-  };
+  }, [startReminders, completeSession]);
 
-  const startReminders = () => {
+  const startReminders = useCallback(() => {
     // 2-hour break reminder
     breakIntervalRef.current = setInterval(() => {
       setShowBreakReminder(true);
@@ -453,9 +453,9 @@ const App: React.FC = () => {
         return prev - 1000;
       });
     }, 1000);
-  };
+  }, [startEyeCountdown, playAlarm, setShowBreakReminder, setEyeRuleActive, setEyeRuleTimer, setShowEyeReminder, setEyeReminderCountdown, setReminderState, setCycleSession]);
 
-  const stopReminders = () => {
+  const stopReminders = useCallback(() => {
     if (breakIntervalRef.current) {
       clearInterval(breakIntervalRef.current);
       breakIntervalRef.current = null;
@@ -473,9 +473,9 @@ const App: React.FC = () => {
       eyeRuleTimerRef.current = null;
     }
     setEyeRuleActive(false);
-  };
+  }, [setEyeRuleActive]);
 
-  const completeSession = (session: CycleSession) => {
+  const completeSession = useCallback((session: CycleSession) => {
     const now = new Date();
     const endTime = now.toLocaleTimeString('en-US', { 
       hour: '2-digit', 
@@ -530,9 +530,9 @@ const App: React.FC = () => {
       setCycleSession(null);
       stopReminders();
     }
-  };
+  }, [startTimer, stopReminders, addPlantToForest, formatTime]);
 
-  const addPlantToForest = () => {
+  const addPlantToForest = useCallback(() => {
     const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
     const newPlant: Plant = {
       id: Date.now().toString(),
@@ -541,9 +541,9 @@ const App: React.FC = () => {
       completed: true
     };
     setForest(prev => [...prev, newPlant]);
-  };
+  }, []);
 
-  const startFocusSession = () => {
+  const startFocusSession = useCallback(() => {
     const newSession: CycleSession = {
       isActive: true,
       currentPhase: 'focus',
@@ -555,9 +555,9 @@ const App: React.FC = () => {
     setCycleSession(newSession);
     startTimer(newSession);
     playChillMusic();
-  };
+  }, [startTimer, playChillMusic]);
 
-  const pauseSession = () => {
+  const pauseSession = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -568,17 +568,17 @@ const App: React.FC = () => {
     }
     setCycleSession(prev => prev ? { ...prev, isPaused: true } : null);
     pauseChillMusic();
-  };
+  }, [pauseChillMusic]);
 
-  const resumeSession = () => {
+  const resumeSession = useCallback(() => {
     if (cycleSession) {
       setCycleSession(prev => prev ? { ...prev, isPaused: false } : null);
       startTimer(cycleSession);
       playChillMusic();
     }
-  };
+  }, [cycleSession, startTimer, playChillMusic]);
 
-  const stopSession = () => {
+  const stopSession = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
@@ -586,22 +586,22 @@ const App: React.FC = () => {
     stopReminders();
     setCycleSession(null);
     pauseChillMusic();
-  };
+  }, [stopReminders, pauseChillMusic]);
 
-  const playAlarm = () => {
+  const playAlarm = useCallback(() => {
     playBeep();
-  };
+  }, []);
 
-  const dismissBreakReminder = () => {
+  const dismissBreakReminder = useCallback(() => {
     setShowBreakReminder(false);
-  };
+  }, []);
 
-  const dismissEyeReminder = () => {
+  const dismissEyeReminder = useCallback(() => {
     setShowEyeReminder(false);
     setReminderState(prev => ({ ...prev, dismissed: true }));
-  };
+  }, []);
 
-  const startEyeCountdown = () => {
+  const startEyeCountdown = useCallback(() => {
     setEyeReminderCountdown(30);
     eyeCountdownRef.current = setInterval(() => {
       setEyeReminderCountdown(prev => {
@@ -616,29 +616,29 @@ const App: React.FC = () => {
         return prev - 1;
       });
     }, 1000);
-  };
+  }, []);
 
-  const clearHistory = () => {
+  const clearHistory = useCallback(() => {
     setSessionHistory([]);
-  };
+  }, []);
 
 
 
 
 
-  const clearForest = () => {
+  const clearForest = useCallback(() => {
     setForest([]);
-  };
+  }, []);
 
-  const getProgressPercentage = () => {
+  const getProgressPercentage = useCallback(() => {
     if (!cycleSession) return 0;
     return ((cycleSession.totalTime - cycleSession.timeLeft) / cycleSession.totalTime) * 100;
-  };
+  }, [cycleSession]);
 
-  const getProgressColor = () => {
+  const getProgressColor = useCallback(() => {
     if (!cycleSession) return '#3b82f6';
     return cycleSession.currentPhase === 'focus' ? '#a08dcc' : '#f59e0b';
-  };
+  }, [cycleSession]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
