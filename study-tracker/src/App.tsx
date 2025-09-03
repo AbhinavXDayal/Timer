@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
+import LZString from 'lz-string';
 
 // Minimal local star icon component (BsStars-like)
 const BsStars = ({ className = 'w-6 h-6' }: { className?: string }) => (
@@ -126,9 +127,22 @@ const App: React.FC = () => {
     const savedEyeRuleTimer = localStorage.getItem('eyeRuleTimer');
     const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
 
+    // Magic Sync Link: if URL hash contains data, prefer it
+    try {
+      if (window.location.hash.startsWith('#data=')) {
+        const compressed = window.location.hash.slice(6);
+        const json = LZString.decompressFromEncodedURIComponent(compressed);
+        if (json) {
+          const payload = JSON.parse(json);
+          if (payload.sessionHistory) setSessionHistory(payload.sessionHistory);
+          if (payload.forest) setForest(payload.forest);
+          if (payload.reminderState) setReminderState(payload.reminderState);
+        }
+      }
+    } catch (_) {}
+
     if (savedCycleSession) {
       const session: CycleSession = JSON.parse(savedCycleSession);
-
       // If a session was active when the page was refreshed, recompute the remaining time
       if (session.isActive) {
         if (!session.isPaused) {
@@ -267,7 +281,7 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Save data to localStorage
+  // Save data to localStorage + update Magic Sync Link in URL
   useEffect(() => {
     if (cycleSession) {
       localStorage.setItem('cycleSession', JSON.stringify(cycleSession));
@@ -277,6 +291,15 @@ const App: React.FC = () => {
     localStorage.setItem('reminderState', JSON.stringify(reminderState));
     localStorage.setItem('eyeRuleTimer', JSON.stringify(eyeRuleTimer));
     localStorage.setItem('eyeRuleActive', JSON.stringify(eyeRuleActive));
+
+    try {
+      const payload = { sessionHistory, forest, reminderState };
+      const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(payload));
+      const newHash = `#data=${compressed}`;
+      if (window.location.hash !== newHash) {
+        history.replaceState(null, '', newHash);
+      }
+    } catch (_) {}
   }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive]);
 
   // Start eye countdown when modal opens
