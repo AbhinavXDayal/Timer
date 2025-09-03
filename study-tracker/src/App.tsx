@@ -258,7 +258,6 @@ const App: React.FC = () => {
   }, []);
 
   // Initialize YouTube player for Chill Music
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const setupYouTube = () => {
       if (youtubePlayerRef.current && youtubePlayerRef2.current) return;
@@ -392,7 +391,6 @@ const App: React.FC = () => {
   }, []);
 
   // Save data to localStorage + push to GUN
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (cycleSession) {
       localStorage.setItem('cycleSession', JSON.stringify(cycleSession));
@@ -421,7 +419,7 @@ const App: React.FC = () => {
     if (showEyeReminder && eyeReminderCountdown === 30) {
       startEyeCountdown();
     }
-  }, [showEyeReminder]);
+  }, [showEyeReminder, eyeReminderCountdown]);
 
   const formatTime = (milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -467,9 +465,9 @@ const App: React.FC = () => {
       setEyeRuleTimer(prev => {
         if (prev <= 1000) {
           // Timer finished - show reminder
-      setShowEyeReminder(true);
+          setShowEyeReminder(true);
           setEyeReminderCountdown(30);
-      playAlarm();
+          playAlarm();
           setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
           startEyeCountdown();
           
@@ -648,6 +646,84 @@ const App: React.FC = () => {
     setSessionHistory([]);
   };
 
+  const addTestSession = () => {
+    const now = new Date();
+    const testSession: Session = {
+      id: Date.now().toString(),
+      type: 'focus',
+      startTime: new Date(now.getTime() - 2 * 60 * 60 * 1000).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      endTime: now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      duration: '02:00:00',
+      date: now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    };
+    setSessionHistory(prev => [testSession, ...prev.slice(0, 19)]);
+  };
+
+  const addBreakSession = () => {
+    const now = new Date();
+    const breakSession: Session = {
+      id: Date.now().toString(),
+      type: 'break',
+      startTime: new Date(now.getTime() - 30 * 60 * 1000).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      endTime: now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      }),
+      duration: '00:30:00',
+      date: now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    };
+    setSessionHistory(prev => [breakSession, ...prev.slice(0, 19)]);
+  };
+
+  const startEyeRuleTimer = () => {
+    setEyeRuleActive(true);
+    setEyeRuleTimer(30 * 60 * 1000); // Reset to 30 minutes
+    
+    if (eyeRuleTimerRef.current) {
+      clearInterval(eyeRuleTimerRef.current);
+    }
+    
+    eyeRuleTimerRef.current = setInterval(() => {
+      setEyeRuleTimer(prev => {
+        if (prev <= 1000) {
+          // Timer finished - show reminder
+          setShowEyeReminder(true);
+          setEyeReminderCountdown(30);
+          playAlarm();
+          setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
+          startEyeCountdown();
+          
+          // Reset timer for next 30 minutes
+          return 30 * 60 * 1000;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
+  };
+
   const clearForest = () => {
     setForest([]);
   };
@@ -764,19 +840,33 @@ const App: React.FC = () => {
 
             {/* Session History - Compact Version */}
             <div className="bg-gray-800/50 rounded-2xl p-5 mt-4 shadow-lg border border-gray-700/30 flex-1">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Session History</h2>
-                <button 
-                  onClick={clearHistory}
-                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
-                >
-                  Clear History
-                </button>
-              </div>
+                             <div className="flex justify-between items-center mb-4">
+                 <h2 className="text-xl font-bold">Session History</h2>
+                 <div className="flex gap-2">
+                   <button 
+                     onClick={addTestSession}
+                     className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm"
+                   >
+                     Add Focus
+                   </button>
+                   <button 
+                     onClick={addBreakSession}
+                     className="text-gray-400 hover:text-yellow-400 transition-colors duration-300 text-sm"
+                   >
+                     Add Break
+                   </button>
+                   <button 
+                     onClick={clearHistory}
+                     className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
+                   >
+                     Clear
+                   </button>
+                 </div>
+               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-full overflow-y-auto">
-                {sessionHistory.length > 0 ? (
-                  sessionHistory.slice(0, 6).map((session) => (
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-full overflow-y-auto">
+                 {sessionHistory.length > 0 ? (
+                   sessionHistory.slice(0, 12).map((session) => (
                     <div
                       key={session.id}
                       className="bg-gray-700 rounded-xl p-3 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
@@ -794,11 +884,14 @@ const App: React.FC = () => {
                           <div className="text-xs text-gray-400">{session.duration}</div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-xs text-gray-400">
-                          {session.startTime}
-                        </div>
-                      </div>
+                                             <div className="text-right">
+                         <div className="text-xs text-gray-400">
+                           {session.startTime} - {session.endTime}
+                         </div>
+                         <div className="text-xs text-gray-500">
+                           {session.date}
+                         </div>
+                       </div>
                     </div>
                   ))
                 ) : (
@@ -812,20 +905,37 @@ const App: React.FC = () => {
 
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
-            {/* 30-30-30 Rule Timer */}
-            {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
-              <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
-                <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
-                <div className="text-center flex flex-col justify-center h-full">
-                  <div className="text-3xl font-bold text-blue-400 mb-2">
-                    {formatTime(eyeRuleTimer)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Look at something 30 feet away for 30 seconds
-                  </div>
-                </div>
-              </div>
-            )}
+                         {/* 30-30-30 Rule Timer */}
+             <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
+               <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
+               <div className="text-center flex flex-col justify-center h-full">
+                 {eyeRuleActive ? (
+                   <>
+                     <div className="text-3xl font-bold text-blue-400 mb-2">
+                       {formatTime(eyeRuleTimer)}
+                     </div>
+                     <div className="text-xs text-gray-400">
+                       Look at something 30 feet away for 30 seconds
+                     </div>
+                   </>
+                 ) : (
+                   <>
+                     <div className="text-3xl font-bold text-gray-400 mb-2">
+                       30:00
+                     </div>
+                     <div className="text-xs text-gray-500 mb-3">
+                       Start a focus session to begin the timer
+                     </div>
+                     <button
+                       onClick={startEyeRuleTimer}
+                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200"
+                     >
+                       Start Timer
+                     </button>
+                   </>
+                 )}
+               </div>
+             </div>
 
             {/* Chill Music */}
             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
