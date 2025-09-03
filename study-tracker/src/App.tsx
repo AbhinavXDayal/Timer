@@ -380,7 +380,7 @@ const App: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
           {/* Main Timer Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-8 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
@@ -458,7 +458,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 mt-6 shadow-lg border border-gray-700/30">
+            <div className="bg-gray-800/50 rounded-2xl p-6 mt-6 shadow-lg border border-gray-700/30 flex-1">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Session History</h2>
                 <button 
