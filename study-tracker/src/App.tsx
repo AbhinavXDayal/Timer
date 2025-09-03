@@ -70,10 +70,29 @@ const App: React.FC = () => {
     const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
 
     if (savedCycleSession) {
-      const session = JSON.parse(savedCycleSession);
-      setCycleSession(session);
-      if (session.isActive && !session.isPaused) {
-        startTimer(session);
+      const session: CycleSession = JSON.parse(savedCycleSession);
+
+      // If a session was active when the page was refreshed, recompute the remaining time
+      if (session.isActive) {
+        if (!session.isPaused) {
+          const elapsedMs = Date.now() - session.startTime;
+          const remainingMs = Math.max(session.totalTime - elapsedMs, 0);
+          const updatedSession: CycleSession = { ...session, timeLeft: remainingMs };
+
+          if (remainingMs > 0) {
+            setCycleSession(updatedSession);
+            startTimer(updatedSession);
+          } else {
+            // Session would have completed while the app was closed
+            setCycleSession(null);
+            stopReminders();
+          }
+        } else {
+          // Paused session – keep saved remaining time
+          setCycleSession(session);
+        }
+      } else {
+        setCycleSession(session);
       }
     }
 
