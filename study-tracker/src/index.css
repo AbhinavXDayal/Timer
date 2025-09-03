@@ -30,26 +30,6 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* Dot matrix panel */
-.dot-matrix {
-  position: relative;
-  background-color: #0f172a; /* slate-900 */
-  border: 1px solid rgba(55, 65, 81, 0.5); /* gray-700/50 */
-  border-radius: 12px;
-  padding: 10px 14px;
-  /* dotted grid */
-  background-image: radial-gradient(rgba(148,163,184,0.25) 1px, transparent 1px);
-  background-size: 8px 8px;
-  overflow: hidden;
-}
-
-.dot-matrix .dm-text {
-  font-family: 'PressStart2P', ui-monospace, monospace;
-  letter-spacing: 0.08em;
-  color: #e5e7eb; /* gray-200 */
-  text-shadow: 0 0 2px rgba(229,231,235,0.35);
-}
-
 /* Tiny box matrix under the timer */
 .dm-grid {
   display: grid;
