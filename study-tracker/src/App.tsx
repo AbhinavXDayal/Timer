@@ -522,6 +522,23 @@ const App: React.FC = () => {
               </div>
             )}
 
+            {/* Chill Music */}
+            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">🎧 Chill Music</h2>
+              </div>
+              <p className="text-xs text-gray-400 mb-3">Tip: Set the Spotify player volume to about 50% so you can hear tutorials.</p>
+              <div className="rounded-xl overflow-hidden">
+                <iframe
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator"
+                  width="100%"
+                  height="152"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </div>
+
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 flex-1">
               <div className="flex justify-between items-center mb-6">
