@@ -828,17 +828,17 @@ const App: React.FC = () => {
             )}
 
             {/* Chill Music */}
-            <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
               <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
               </div>
                              <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div className="rounded-xl overflow-hidden">
                   <iframe
                     id="chillYoutube"
                     width="100%"
-                    height="180"
+                    height="160"
                     src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
                     title="YouTube video player"
                     frameBorder="0"
