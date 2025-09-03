@@ -57,6 +57,22 @@ const App: React.FC = () => {
   const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef = useRef<any>(null);
 
+  const playChillMusic = () => {
+    try {
+      if (youtubePlayerRef.current && youtubePlayerRef.current.playVideo) {
+        youtubePlayerRef.current.playVideo();
+      }
+    } catch (_) {}
+  };
+
+  const pauseChillMusic = () => {
+    try {
+      if (youtubePlayerRef.current && youtubePlayerRef.current.pauseVideo) {
+        youtubePlayerRef.current.pauseVideo();
+      }
+    } catch (_) {}
+  };
+
   // Plant types for gamification
   const plantTypes = [
     { type: 'tree', emoji: '🌳', name: 'Oak Tree' },
@@ -344,6 +360,7 @@ const App: React.FC = () => {
     };
     setCycleSession(newSession);
     startTimer(newSession);
+    playChillMusic();
   };
 
   const pauseSession = () => {
@@ -356,12 +373,14 @@ const App: React.FC = () => {
       eyeRuleTimerRef.current = null;
     }
     setCycleSession(prev => prev ? { ...prev, isPaused: true } : null);
+    pauseChillMusic();
   };
 
   const resumeSession = () => {
     if (cycleSession) {
       setCycleSession(prev => prev ? { ...prev, isPaused: false } : null);
       startTimer(cycleSession);
+      playChillMusic();
     }
   };
 
@@ -372,6 +391,7 @@ const App: React.FC = () => {
     }
     stopReminders();
     setCycleSession(null);
+    pauseChillMusic();
   };
 
   const playAlarm = () => {
