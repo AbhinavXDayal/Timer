@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
-import LZString from 'lz-string';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const GunLib: any = require('gun');
 require('gun/sea');
@@ -78,6 +77,7 @@ const App: React.FC = () => {
   const youtubePlayerRef2 = useRef<any>(null);
   const youtubeSaveIntervalRef2 = useRef<NodeJS.Timeout | null>(null);
   const userPausedRef = useRef<boolean>(false);
+  const hasUnmutedOnInteractionRef = useRef<boolean>(false);
 
   // GUN peer setup for no-login sync
   const gunRef = useRef<any>(null);
@@ -337,24 +337,36 @@ const App: React.FC = () => {
     // If API already loaded
     if (window.YT && window.YT.Player) {
       setupYouTube();
-      return;
+    } else {
+      // Inject API script once
+      const existingScript = document.getElementById('youtube-iframe-api');
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.id = 'youtube-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        document.body.appendChild(tag);
+      }
+
+      // YouTube API global callback
+      const prev = (window as any).onYouTubeIframeAPIReady;
+      (window as any).onYouTubeIframeAPIReady = () => {
+        if (typeof prev === 'function') prev();
+        setupYouTube();
+      };
     }
 
-    // Inject API script once
-    const existingScript = document.getElementById('youtube-iframe-api');
-    if (!existingScript) {
-      const tag = document.createElement('script');
-      tag.id = 'youtube-iframe-api';
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.body.appendChild(tag);
-    }
-
-    // YouTube API global callback
-    const prev = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      if (typeof prev === 'function') prev();
-      setupYouTube();
+    // Unmute and play on first user interaction anywhere
+    const handleFirstInteraction = () => {
+      if (hasUnmutedOnInteractionRef.current) return;
+      hasUnmutedOnInteractionRef.current = true;
+      playChillMusic();
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
     };
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('keydown', handleFirstInteraction);
+    window.addEventListener('touchstart', handleFirstInteraction);
 
     // Save current time when navigating away
     const handleBeforeUnload = () => {
@@ -365,6 +377,9 @@ const App: React.FC = () => {
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
       if (youtubeSaveIntervalRef.current) {
         clearInterval(youtubeSaveIntervalRef.current);
         youtubeSaveIntervalRef.current = null;
