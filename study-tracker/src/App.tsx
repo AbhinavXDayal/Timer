@@ -646,83 +646,9 @@ const App: React.FC = () => {
     setSessionHistory([]);
   };
 
-  const addTestSession = () => {
-    const now = new Date();
-    const testSession: Session = {
-      id: Date.now().toString(),
-      type: 'focus',
-      startTime: new Date(now.getTime() - 2 * 60 * 60 * 1000).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }),
-      endTime: now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }),
-      duration: '02:00:00',
-      date: now.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    };
-    setSessionHistory(prev => [testSession, ...prev.slice(0, 19)]);
-  };
 
-  const addBreakSession = () => {
-    const now = new Date();
-    const breakSession: Session = {
-      id: Date.now().toString(),
-      type: 'break',
-      startTime: new Date(now.getTime() - 30 * 60 * 1000).toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }),
-      endTime: now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: false 
-      }),
-      duration: '00:30:00',
-      date: now.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    };
-    setSessionHistory(prev => [breakSession, ...prev.slice(0, 19)]);
-  };
 
-  const startEyeRuleTimer = () => {
-    setEyeRuleActive(true);
-    setEyeRuleTimer(30 * 60 * 1000); // Reset to 30 minutes
-    
-    if (eyeRuleTimerRef.current) {
-      clearInterval(eyeRuleTimerRef.current);
-    }
-    
-    eyeRuleTimerRef.current = setInterval(() => {
-      setEyeRuleTimer(prev => {
-        if (prev <= 1000) {
-          // Timer finished - show reminder
-          setShowEyeReminder(true);
-          setEyeReminderCountdown(30);
-          playAlarm();
-          setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
-          startEyeCountdown();
-          
-          // Reset timer for next 30 minutes
-          return 30 * 60 * 1000;
-        }
-        return prev - 1000;
-      });
-    }, 1000);
-  };
+
 
   const clearForest = () => {
     setForest([]);
@@ -779,16 +705,7 @@ const App: React.FC = () => {
           )}
           </div>
 
-                {/* Progress boxes under timer (minimal) */}
-                                 <div className="w-full max-w-md mx-auto mb-2">
-                  <div className="dm-grid">
-                    {Array.from({ length: 48 }).map((_, idx) => {
-                      const fillThreshold = (idx + 1) / 48 * 100;
-                      const filled = getProgressPercentage() >= fillThreshold;
-                      return <div key={idx} className={`dm-dot ${filled ? 'filled' : ''}`}></div>;
-                    })}
-                  </div>
-                </div>
+                
           
                 {/* Controls */}
                 <div className="flex items-center gap-3 mb-4">
@@ -842,26 +759,12 @@ const App: React.FC = () => {
             <div className="bg-gray-800/50 rounded-2xl p-5 mt-4 shadow-lg border border-gray-700/30 flex-1">
                              <div className="flex justify-between items-center mb-4">
                  <h2 className="text-xl font-bold">Session History</h2>
-                 <div className="flex gap-2">
-                   <button 
-                     onClick={addTestSession}
-                     className="text-gray-400 hover:text-blue-400 transition-colors duration-300 text-sm"
-                   >
-                     Add Focus
-                   </button>
-                   <button 
-                     onClick={addBreakSession}
-                     className="text-gray-400 hover:text-yellow-400 transition-colors duration-300 text-sm"
-                   >
-                     Add Break
-                   </button>
-                   <button 
-                     onClick={clearHistory}
-                     className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
-                   >
-                     Clear
-                   </button>
-                 </div>
+                 <button 
+                   onClick={clearHistory}
+                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
+                 >
+                   Clear
+                 </button>
                </div>
               
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-full overflow-y-auto">
@@ -918,22 +821,16 @@ const App: React.FC = () => {
                        Look at something 30 feet away for 30 seconds
                      </div>
                    </>
-                 ) : (
-                   <>
-                     <div className="text-3xl font-bold text-gray-400 mb-2">
-                       30:00
-                     </div>
-                     <div className="text-xs text-gray-500 mb-3">
-                       Start a focus session to begin the timer
-                     </div>
-                     <button
-                       onClick={startEyeRuleTimer}
-                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200"
-                     >
-                       Start Timer
-                     </button>
-                   </>
-                 )}
+                                   ) : (
+                    <>
+                      <div className="text-3xl font-bold text-gray-400 mb-2">
+                        30:00
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Start a focus session to begin the timer
+                      </div>
+                    </>
+                  )}
                </div>
              </div>
 
