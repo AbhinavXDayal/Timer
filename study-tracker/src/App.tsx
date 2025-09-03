@@ -161,14 +161,42 @@ const App: React.FC = () => {
       if (!iframe) return;
       if (window.YT && window.YT.Player) {
         youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
+          playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },
           events: {
             onReady: (event: any) => {
               try {
-                event.target.setVolume(50);
+                // Restore time and set initial volume
                 const saved = Number(localStorage.getItem('chillMusicTime') || '0');
                 if (!Number.isNaN(saved) && saved > 0) {
                   event.target.seekTo(saved, true);
                 }
+                event.target.setVolume(50);
+
+                // Try to autoplay; if blocked, play muted and wait for user interaction to unmute
+                const tryPlay = async () => {
+                  try {
+                    event.target.playVideo();
+                  } catch (_) {
+                    try {
+                      event.target.mute();
+                      event.target.playVideo();
+                    } catch (_) {}
+                  }
+                };
+                tryPlay();
+
+                const handleFirstInteraction = () => {
+                  try {
+                    event.target.unMute();
+                    event.target.setVolume(50);
+                  } catch (_) {}
+                  window.removeEventListener('click', handleFirstInteraction);
+                  window.removeEventListener('keydown', handleFirstInteraction);
+                  window.removeEventListener('touchstart', handleFirstInteraction);
+                };
+                window.addEventListener('click', handleFirstInteraction, { once: true });
+                window.addEventListener('keydown', handleFirstInteraction, { once: true });
+                window.addEventListener('touchstart', handleFirstInteraction, { once: true });
               } catch (_) {}
             },
             onStateChange: (event: any) => {
