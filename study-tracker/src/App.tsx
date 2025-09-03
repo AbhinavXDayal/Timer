@@ -67,6 +67,11 @@ const App: React.FC = () => {
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
 
+  // App settings
+  const [isMuted, setIsMuted] = useState(false);
+  const [minimalMode, setMinimalMode] = useState(false);
+  const [keepMusicDuringBreaks, setKeepMusicDuringBreaks] = useState(true);
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const eyeReminderIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -125,6 +130,7 @@ const App: React.FC = () => {
     const savedReminderState = localStorage.getItem('reminderState');
     const savedEyeRuleTimer = localStorage.getItem('eyeRuleTimer');
     const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
+    const savedSettings = localStorage.getItem('appSettings');
 
     if (savedCycleSession) {
       const session: CycleSession = JSON.parse(savedCycleSession);
@@ -173,7 +179,21 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
+
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        if (typeof parsed.isMuted === 'boolean') setIsMuted(parsed.isMuted);
+        if (typeof parsed.minimalMode === 'boolean') setMinimalMode(parsed.minimalMode);
+        if (typeof parsed.keepMusicDuringBreaks === 'boolean') setKeepMusicDuringBreaks(parsed.keepMusicDuringBreaks);
+      } catch {}
+    }
   }, []);
+
+  // Persist settings
+  useEffect(() => {
+    localStorage.setItem('appSettings', JSON.stringify({ isMuted, minimalMode, keepMusicDuringBreaks }));
+  }, [isMuted, minimalMode, keepMusicDuringBreaks]);
 
   // Initialize YouTube player for Chill Music and set volume to 50%
   useEffect(() => {
@@ -478,6 +498,7 @@ const App: React.FC = () => {
   };
 
   const playAlarm = () => {
+    if (isMuted) return;
     playBeep();
   };
 
@@ -526,11 +547,27 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
+    <div className={`min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden ${minimalMode ? 'bg-gray-900' : ''}`}>
       <div className="max-w-7xl mx-auto h-full">
-        <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
-          🌌 Space Focus
-        </h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-bold text-center text-forest-green">
+            🌌 Space Focus
+          </h1>
+          <div className="flex items-center gap-2 text-sm">
+            <label className="flex items-center gap-1 cursor-pointer select-none">
+              <input type="checkbox" className="accent-forest-green" checked={isMuted} onChange={(e) => setIsMuted(e.target.checked)} />
+              <span>Mute</span>
+            </label>
+            <label className="flex items-center gap-1 cursor-pointer select-none">
+              <input type="checkbox" className="accent-forest-green" checked={minimalMode} onChange={(e) => setMinimalMode(e.target.checked)} />
+              <span>Minimal</span>
+            </label>
+            <label className="flex items-center gap-1 cursor-pointer select-none">
+              <input type="checkbox" className="accent-forest-green" checked={keepMusicDuringBreaks} onChange={(e) => setKeepMusicDuringBreaks(e.target.checked)} />
+              <span>Keep music on breaks</span>
+            </label>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-stretch">
           {/* Main Timer Section */}
