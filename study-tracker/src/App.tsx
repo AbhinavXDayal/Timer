@@ -3,6 +3,18 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { playBeep } from './utils/audioUtils';
 
+// Minimal local star icon component (BsStars-like)
+const BsStars = ({ className = 'w-6 h-6' }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16 16"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M7.938 2.016a.5.5 0 0 1 .124 0l1.58.317 1.12-1.12a.5.5 0 0 1 .707.707l-1.12 1.12.317 1.58a.5.5 0 0 1-.614.588L8 4.383l-1.952.825a.5.5 0 0 1-.614-.588l.317-1.58-1.12-1.12a.5.5 0 0 1 .707-.707l1.12 1.12 1.58-.317ZM3.612 6.443a.5.5 0 0 1 .124 0l2.33.468 1.651-1.65a.5.5 0 0 1 .707 0l1.65 1.65 2.33-.469a.5.5 0 0 1 .588.614l-.469 2.33 1.65 1.651a.5.5 0 0 1-.353.853.5.5 0 0 1-.354-.146l-1.65-1.65-2.33.469a.5.5 0 0 1-.588-.614l.469-2.33-1.65-1.65-1.651 1.65.469 2.33a.5.5 0 0 1-.588.614l-2.33-.469-1.65 1.65a.5.5 0 1 1-.707-.707l1.65-1.651-.469-2.33a.5.5 0 0 1 .464-.61Z"/>
+  </svg>
+);
+
 // Allow accessing YouTube API on window
 declare global {
   interface Window {
@@ -34,6 +46,11 @@ interface CycleSession {
   timeLeft: number;
   totalTime: number;
   isPaused: boolean;
+}
+
+interface StarItem {
+  id: string;
+  createdAt: string;
 }
 
 const FOCUS_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
@@ -520,7 +537,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
-          🌌 Study Forest
+          🌌 Space Focus
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-stretch">
@@ -691,7 +708,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30 flex-1">
                               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">🌌 Your Forest</h2>
+                <h2 className="text-xl font-bold flex items-center gap-2"><BsStars className="w-5 h-5"/> Your Space</h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
@@ -702,7 +719,7 @@ const App: React.FC = () => {
               
               <div className="text-center mb-4">
                 <div className="text-3xl font-bold text-forest-green">{forest.length}</div>
-                <div className="text-sm text-gray-400">Plants Grown</div>
+                <div className="text-sm text-gray-400">Stars Collected</div>
               </div>
 
               <div className="grid grid-cols-3 gap-3 flex-1">
@@ -712,7 +729,7 @@ const App: React.FC = () => {
                     className="bg-gray-700 rounded-xl p-3 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
                   >
                     <div className="text-2xl mb-1">
-                      {plantTypes.find(p => p.type === plant.type)?.emoji || '🌱'}
+                      <span role="img" aria-label="star">✨</span>
                     </div>
                     <div className="text-xs text-gray-400">
                       {new Date(plant.plantedAt).toLocaleDateString()}
