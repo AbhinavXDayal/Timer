@@ -232,7 +232,7 @@ const App: React.FC = () => {
           setCycleSession(session);
         }
       } else {
-        setCycleSession(session);
+      setCycleSession(session);
       }
     }
 
@@ -665,6 +665,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
+        <div className="bg-gray-800/30 rounded-2xl p-4 border border-gray-700/30">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
           🌌 Space Focus
         </h1>
@@ -698,10 +699,10 @@ const App: React.FC = () => {
                         cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
                         {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-                      </div>
-                    </div>
-                  )}
-                </div>
+            </div>
+            </div>
+          )}
+          </div>
 
                 {/* Minimal dot boxes under timer */}
                 <div className="w-full max-w-md mx-auto mb-2">
@@ -731,15 +732,15 @@ const App: React.FC = () => {
                           className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
                         >
                           Resume
-                        </button>
-                      ) : (
+            </button>
+          ) : (
                         <button
                           onClick={pauseSession}
                           className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
                         >
                           Pause
-                        </button>
-                      )}
+            </button>
+          )}
                       <div className="h-6 w-px bg-gray-700/60" />
                       <button
                         onClick={stopSession}
@@ -748,8 +749,8 @@ const App: React.FC = () => {
                         Stop
                       </button>
                     </div>
-                  )}
-                </div>
+                    )}
+                  </div>
 
                 {/* Status */}
                 <div className={`text-sm font-medium ${
@@ -897,12 +898,12 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-                            {forest.length === 0 && (
+              {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
                   <div className="text-3xl mb-2">✨</div>
                   <div className="text-sm">Complete focus sessions to light up your space!</div>
-                </div>
-              )}
+            </div>
+          )}
             </div>
           </div>
         </div>
@@ -954,6 +955,8 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 };
