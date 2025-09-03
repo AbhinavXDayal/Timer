@@ -713,7 +713,7 @@ const App: React.FC = () => {
                       return <div key={idx} className={`dm-dot ${filled ? 'filled' : ''}`}></div>;
                     })}
                   </div>
-                </div>
+          </div>
           
                 {/* Controls */}
                 <div className="flex justify-center mb-4">
@@ -957,7 +957,7 @@ const App: React.FC = () => {
       )}
     </div>
   </div>
-</div>
+    </div>
   );
 };
 
