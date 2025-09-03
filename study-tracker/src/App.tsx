@@ -395,7 +395,7 @@ const App: React.FC = () => {
     if (showEyeReminder && eyeReminderCountdown === 30) {
       startEyeCountdown();
     }
-  }, [showEyeReminder, eyeReminderCountdown, startEyeCountdown]);
+  }, [showEyeReminder, eyeReminderCountdown, startEyeCountdown, startTimer]);
 
   const formatTime = useCallback((milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
