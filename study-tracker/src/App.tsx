@@ -826,31 +826,33 @@ const App: React.FC = () => {
                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
               </div>
                              <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
-              <div className="rounded-xl overflow-hidden mb-3">
-                <iframe
-                  id="chillYoutube"
-                  width="100%"
-                  height="215"
-                  src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                ></iframe>
-              </div>
-              <div className="rounded-xl overflow-hidden">
-                <iframe
-                  id="chillYoutube2"
-                  width="100%"
-                  height="215"
-                  src="https://www.youtube.com/embed/jMZGmWHDbqE?si=98ihOagVJxkkINf6&enablejsapi=1&modestbranding=1&rel=0"
-                  title="YouTube video player 2"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                ></iframe>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="rounded-xl overflow-hidden">
+                  <iframe
+                    id="chillYoutube"
+                    width="100%"
+                    height="180"
+                    src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="rounded-xl overflow-hidden">
+                  <iframe
+                    id="chillYoutube2"
+                    width="100%"
+                    height="180"
+                    src="https://www.youtube.com/embed/jMZGmWHDbqE?si=98ihOagVJxkkINf6&enablejsapi=1&modestbranding=1&rel=0"
+                    title="YouTube video player 2"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  ></iframe>
+                </div>
               </div>
             </div>
 
