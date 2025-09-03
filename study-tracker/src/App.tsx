@@ -445,17 +445,17 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
-        <h1 className="text-3xl font-bold text-center mb-6 text-forest-green">
+        <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
           🌱 Study Forest
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30">
+                         <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                <div className="relative w-72 h-72 mb-6">
+                                 <div className="relative w-64 h-64 mb-4">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={formatTime(cycleSession?.timeLeft || 0)}
@@ -481,7 +481,7 @@ const App: React.FC = () => {
           </div>
           
                 {/* Controls */}
-                <div className="flex gap-3 mb-6">
+                <div className="flex gap-2 mb-4">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
