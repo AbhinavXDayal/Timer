@@ -378,7 +378,7 @@ const App: React.FC = () => {
           🌱 Study Forest
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-8 shadow-lg border border-gray-700/30">
@@ -469,7 +469,7 @@ const App: React.FC = () => {
                 </button>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-full overflow-y-auto">
                 {sessionHistory.length > 0 ? (
                   sessionHistory.slice(0, 6).map((session) => (
                     <div
@@ -530,7 +530,7 @@ const App: React.FC = () => {
               <p className="text-xs text-gray-400 mb-3">Tip: Set the Spotify player volume to about 50% so you can hear tutorials.</p>
               <div className="rounded-xl overflow-hidden">
                 <iframe
-                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO?utm_source=generator"
+                  src="https://open.spotify.com/embed/playlist/0oGur0LHEuC4FJMSBKuSIW?utm_source=generator"
                   width="100%"
                   height="152"
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
