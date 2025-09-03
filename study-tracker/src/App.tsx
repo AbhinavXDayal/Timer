@@ -77,6 +77,7 @@ const App: React.FC = () => {
   const youtubeSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef2 = useRef<any>(null);
   const youtubeSaveIntervalRef2 = useRef<NodeJS.Timeout | null>(null);
+  const userPausedRef = useRef<boolean>(false);
 
   // GUN peer setup for no-login sync
   const gunRef = useRef<any>(null);
@@ -103,11 +104,12 @@ const App: React.FC = () => {
   };
 
   const playChillMusic = () => {
+    userPausedRef.current = false;
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.playVideo) {
         if (youtubePlayerRef.current.unMute) {
           youtubePlayerRef.current.unMute();
-          if (youtubePlayerRef.current.setVolume) youtubePlayerRef.current.setVolume(50);
+          if (youtubePlayerRef.current.setVolume) youtubePlayerRef.current.setVolume(30);
         }
         youtubePlayerRef.current.playVideo();
       }
@@ -116,7 +118,7 @@ const App: React.FC = () => {
       if (youtubePlayerRef2.current && youtubePlayerRef2.current.playVideo) {
         if (youtubePlayerRef2.current.unMute) {
           youtubePlayerRef2.current.unMute();
-          if (youtubePlayerRef2.current.setVolume) youtubePlayerRef2.current.setVolume(50);
+          if (youtubePlayerRef2.current.setVolume) youtubePlayerRef2.current.setVolume(30);
         }
         youtubePlayerRef2.current.playVideo();
       }
@@ -124,6 +126,7 @@ const App: React.FC = () => {
   };
 
   const pauseChillMusic = () => {
+    userPausedRef.current = true;
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.pauseVideo) {
         youtubePlayerRef.current.pauseVideo();
@@ -133,6 +136,19 @@ const App: React.FC = () => {
       if (youtubePlayerRef2.current && youtubePlayerRef2.current.pauseVideo) {
         youtubePlayerRef2.current.pauseVideo();
       }
+    } catch (_) {}
+  };
+
+  const requestAutoplay = (player: any) => {
+    try {
+      player.mute && player.mute();
+      player.playVideo && player.playVideo();
+      // If YouTube auto-pauses, retry shortly unless the user paused
+      setTimeout(() => {
+        if (!userPausedRef.current && player.getPlayerState && player.getPlayerState() !== 1) {
+          try { player.playVideo(); } catch (_) {}
+        }
+      }, 600);
     } catch (_) {}
   };
 
@@ -250,7 +266,7 @@ const App: React.FC = () => {
       if (window.YT && window.YT.Player) {
         if (iframe && !youtubePlayerRef.current) {
           youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1 },
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1, loop: 1, playlist: 'wmLGG5DYDWQ' },
             events: {
               onReady: (event: any) => {
                 try {
@@ -260,19 +276,7 @@ const App: React.FC = () => {
                     event.target.seekTo(saved, true);
                   }
                   event.target.setVolume(30);
-
-                  // Try to autoplay; if blocked, play muted. We'll unmute on session start
-                  const tryPlay = async () => {
-                    try {
-                      event.target.playVideo();
-                    } catch (_) {
-                      try {
-                        event.target.mute();
-                        event.target.playVideo();
-                      } catch (_) {}
-                    }
-                  };
-                  tryPlay();
+                  requestAutoplay(event.target);
                 } catch (_) {}
               },
               onStateChange: (event: any) => {
@@ -287,6 +291,10 @@ const App: React.FC = () => {
                       clearInterval(youtubeSaveIntervalRef.current);
                       youtubeSaveIntervalRef.current = null;
                     }
+                    // Kick playback again if auto-paused and not user-initiated
+                    if (!userPausedRef.current) {
+                      requestAutoplay(event.target);
+                    }
                   }
                 } catch (_) {}
               }
@@ -295,7 +303,7 @@ const App: React.FC = () => {
         }
         if (iframe2 && !youtubePlayerRef2.current) {
           youtubePlayerRef2.current = new window.YT.Player('chillYoutube2', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1 },
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1, loop: 1, playlist: 'jMZGmWHDbqE' },
             events: {
               onReady: (event: any) => {
                 try {
@@ -304,17 +312,7 @@ const App: React.FC = () => {
                     event.target.seekTo(saved, true);
                   }
                   event.target.setVolume(30);
-                  const tryPlay = async () => {
-                    try {
-                      event.target.playVideo();
-                    } catch (_) {
-                      try {
-                        event.target.mute();
-                        event.target.playVideo();
-                      } catch (_) {}
-                    }
-                  };
-                  tryPlay();
+                  requestAutoplay(event.target);
                 } catch (_) {}
               },
               onStateChange: (event: any) => {
@@ -327,6 +325,9 @@ const App: React.FC = () => {
                     if (youtubeSaveIntervalRef2.current) {
                       clearInterval(youtubeSaveIntervalRef2.current);
                       youtubeSaveIntervalRef2.current = null;
+                    }
+                    if (!userPausedRef.current) {
+                      requestAutoplay(event.target);
                     }
                   }
                 } catch (_) {}
@@ -660,7 +661,7 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-                         <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30">
+                         <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
                                  <div className="relative w-60 h-60 mb-3">
