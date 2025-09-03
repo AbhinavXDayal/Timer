@@ -161,9 +161,9 @@ const App: React.FC = () => {
       setEyeRuleTimer(prev => {
         if (prev <= 1000) {
           // Timer finished - show reminder
-          setShowEyeReminder(true);
+      setShowEyeReminder(true);
           setEyeReminderCountdown(30);
-          playAlarm();
+      playAlarm();
           setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
           startEyeCountdown();
           
@@ -221,7 +221,7 @@ const App: React.FC = () => {
         day: 'numeric' 
       })
     };
-
+    
     setSessionHistory(prev => [completedSession, ...prev.slice(0, 19)]); // Keep last 20 sessions
 
     // Add plant to forest if it was a focus session
@@ -353,7 +353,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gray-900 text-white p-4 overflow-hidden">
+    <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
         <h1 className="text-3xl font-bold text-center mb-6 text-forest-green">
           🌱 Study Forest
@@ -385,11 +385,11 @@ const App: React.FC = () => {
                         cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
                         {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
+            </div>
+            </div>
+          )}
+          </div>
+          
                 {/* Controls */}
                 <div className="flex gap-3 mb-6">
                   {!cycleSession ? (
@@ -407,24 +407,24 @@ const App: React.FC = () => {
                           className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                         >
                           Resume
-                        </button>
-                      ) : (
+            </button>
+          ) : (
                         <button
                           onClick={pauseSession}
                           className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                         >
                           Pause
-                        </button>
-                      )}
+            </button>
+          )}
                       <button
                         onClick={stopSession}
                         className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
                       >
                         Stop
                       </button>
-                    </>
-                  )}
-                </div>
+                      </>
+                    )}
+                  </div>
 
                 {/* Status */}
                 <div className={`text-sm font-medium ${
@@ -442,7 +442,7 @@ const App: React.FC = () => {
             <div className="bg-gray-800/50 rounded-2xl p-6 mt-6 shadow-lg border border-gray-700/30">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Session History</h2>
-                <button
+                <button 
                   onClick={clearHistory}
                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
                 >
@@ -487,7 +487,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Right Side - Forest and Eye Timer */}
-          <div className="lg:col-span-1 flex flex-col h-full">
+          <div className="lg:col-span-1 flex flex-col h-full min-h-0">
             {/* 30-30-30 Rule Timer */}
             {cycleSession?.isActive && cycleSession.currentPhase === 'focus' && eyeRuleActive && (
               <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
@@ -540,8 +540,8 @@ const App: React.FC = () => {
                 <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
                   <div className="text-3xl mb-2">🌱</div>
                   <div className="text-sm">Complete focus sessions to grow your forest!</div>
-                </div>
-              )}
+            </div>
+          )}
             </div>
           </div>
         </div>
