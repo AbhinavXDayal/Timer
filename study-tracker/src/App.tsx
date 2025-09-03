@@ -232,7 +232,7 @@ const App: React.FC = () => {
           setCycleSession(session);
         }
       } else {
-        setCycleSession(session);
+      setCycleSession(session);
       }
     }
 
@@ -664,18 +664,18 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
-      <div className="mx-auto h-full" style={{maxWidth: '1400px'}}>
+      <div className="max-w-7xl mx-auto h-full">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
           🌌 Space Focus
         </h1>
 
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12 h-full items-stretch">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
                          <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                                                                 <div className="relative w-64 h-56 mb-2">
+                                <div className="relative w-56 h-56 mb-2">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -698,13 +698,13 @@ const App: React.FC = () => {
                         cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
                         {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-                      </div>
-                    </div>
-                  )}
-                </div>
+            </div>
+            </div>
+          )}
+          </div>
 
                 {/* Progress boxes under timer (minimal) */}
-                                 <div className="w-full max-w-lg mx-auto mb-2">
+                                 <div className="w-full max-w-md mx-auto mb-2">
                   <div className="dm-grid">
                     {Array.from({ length: 48 }).map((_, idx) => {
                       const fillThreshold = (idx + 1) / 48 * 100;
@@ -713,9 +713,9 @@ const App: React.FC = () => {
                     })}
                   </div>
                 </div>
-
+          
                 {/* Controls */}
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-3 mb-4">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
@@ -731,24 +731,24 @@ const App: React.FC = () => {
                           className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
                         >
                           Resume
-                        </button>
-                      ) : (
+            </button>
+          ) : (
                         <button
                           onClick={pauseSession}
                           className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
                         >
                           Pause
-                        </button>
-                      )}
+            </button>
+          )}
                       <button
                         onClick={stopSession}
                         className="text-gray-400 hover:text-red-400 underline-offset-4 hover:underline transition-colors duration-200"
                       >
                         Stop
                       </button>
-                    </>
-                  )}
-                </div>
+                      </>
+                    )}
+                  </div>
 
                 {/* Status */}
                 <div className={`text-sm font-medium ${
@@ -896,12 +896,12 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-                            {forest.length === 0 && (
+              {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
                   <div className="text-3xl mb-2">✨</div>
                   <div className="text-sm">Complete focus sessions to light up your space!</div>
-                </div>
-              )}
+            </div>
+          )}
             </div>
           </div>
         </div>
