@@ -56,6 +56,17 @@ const App: React.FC = () => {
   const eyeCountdownRef = useRef<NodeJS.Timeout | null>(null);
   const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef = useRef<any>(null);
+  const youtubeSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const saveChillMusicTime = () => {
+    try {
+      const player = youtubePlayerRef.current;
+      if (player && player.getCurrentTime) {
+        const t = Math.floor(player.getCurrentTime());
+        localStorage.setItem('chillMusicTime', String(t));
+      }
+    } catch (_) {}
+  };
 
   const playChillMusic = () => {
     try {
@@ -154,6 +165,27 @@ const App: React.FC = () => {
             onReady: (event: any) => {
               try {
                 event.target.setVolume(50);
+                const saved = Number(localStorage.getItem('chillMusicTime') || '0');
+                if (!Number.isNaN(saved) && saved > 0) {
+                  event.target.seekTo(saved, true);
+                }
+              } catch (_) {}
+            },
+            onStateChange: (event: any) => {
+              // 1 = playing, 2 = paused, 0 = ended
+              try {
+                if (event.data === 1) {
+                  // Start periodic save while playing
+                  if (youtubeSaveIntervalRef.current) clearInterval(youtubeSaveIntervalRef.current);
+                  youtubeSaveIntervalRef.current = setInterval(saveChillMusicTime, 5000);
+                } else {
+                  // Save once when paused/ended and clear interval
+                  saveChillMusicTime();
+                  if (youtubeSaveIntervalRef.current) {
+                    clearInterval(youtubeSaveIntervalRef.current);
+                    youtubeSaveIntervalRef.current = null;
+                  }
+                }
               } catch (_) {}
             }
           }
@@ -181,6 +213,20 @@ const App: React.FC = () => {
     window.onYouTubeIframeAPIReady = () => {
       if (typeof prev === 'function') prev();
       setupYouTube();
+    };
+
+    // Save current time when navigating away
+    const handleBeforeUnload = () => {
+      saveChillMusicTime();
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (youtubeSaveIntervalRef.current) {
+        clearInterval(youtubeSaveIntervalRef.current);
+        youtubeSaveIntervalRef.current = null;
+      }
     };
   }, []);
 
