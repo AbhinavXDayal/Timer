@@ -844,7 +844,7 @@ const App: React.FC = () => {
                   id="chillYoutube2"
                   width="100%"
                   height="215"
-                  src="https://www.youtube.com/embed/jMZGmWHDbqE?enablejsapi=1&modestbranding=1&rel=0"
+                  src="https://www.youtube.com/embed/jMZGmWHDbqE?si=98ihOagVJxkkINf6&enablejsapi=1&modestbranding=1&rel=0"
                   title="YouTube video player 2"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
