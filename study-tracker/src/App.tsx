@@ -703,12 +703,9 @@ const App: React.FC = () => {
                   )}
                 </div>
 
-                {/* Dot-matrix panel under timer */}
-                <div className="dot-matrix w-full max-w-md mx-auto mb-3">
-                  <div className="dm-text text-center text-xs sm:text-sm">
-                    {cycleSession ? 'Time Remaining' : 'Ready'} • {formatTime(cycleSession?.timeLeft || 0)}
-                  </div>
-                  <div className="mt-3 dm-grid">
+                {/* Minimal dot boxes under timer */}
+                <div className="w-full max-w-md mx-auto mb-2">
+                  <div className="dm-grid">
                     {Array.from({ length: 48 }).map((_, idx) => {
                       const fillThreshold = (idx + 1) / 48 * 100;
                       const filled = getProgressPercentage() >= fillThreshold;
@@ -718,40 +715,41 @@ const App: React.FC = () => {
                 </div>
           
                 {/* Controls */}
-                <div className="flex gap-2 mb-4">
+                <div className="flex justify-center mb-4">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
-                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                      className="px-6 py-2 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition-colors"
                     >
-                      Start Focus Session
+                      Start
                     </button>
                   ) : (
-                    <>
+                    <div className="inline-flex items-center rounded-full overflow-hidden border border-gray-700/60 bg-gray-800/60">
                       {cycleSession.isPaused ? (
                         <button
                           onClick={resumeSession}
-                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                          className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
                         >
                           Resume
-            </button>
-          ) : (
+                        </button>
+                      ) : (
                         <button
                           onClick={pauseSession}
-                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                          className="px-5 py-2 text-gray-200 hover:bg-gray-700/60 transition-colors"
                         >
                           Pause
-            </button>
-          )}
+                        </button>
+                      )}
+                      <div className="h-6 w-px bg-gray-700/60" />
                       <button
                         onClick={stopSession}
-                        className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                        className="px-5 py-2 text-gray-300 hover:text-red-300 hover:bg-gray-700/60 transition-colors"
                       >
                         Stop
                       </button>
-                      </>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Status */}
                 <div className={`text-sm font-medium ${
