@@ -268,7 +268,7 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
-  }, []);
+  }, [startTimer, playChillMusic, stopReminders]);
 
   // Initialize YouTube player for Chill Music
   useEffect(() => {
