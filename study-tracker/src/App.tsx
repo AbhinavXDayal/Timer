@@ -66,6 +66,8 @@ const App: React.FC = () => {
   const [eyeReminderCountdown, setEyeReminderCountdown] = useState(30);
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
+  const [youtubeSearchQuery, setYoutubeSearchQuery] = useState('');
+  const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -74,8 +76,8 @@ const App: React.FC = () => {
   const eyeRuleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const youtubePlayerRef = useRef<any>(null);
   const youtubeSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const youtubePlayerRef2 = useRef<any>(null);
-  const youtubeSaveIntervalRef2 = useRef<NodeJS.Timeout | null>(null);
+
+
   const userPausedRef = useRef<boolean>(false);
   const hasUnmutedOnInteractionRef = useRef<boolean>(false);
 
@@ -93,15 +95,7 @@ const App: React.FC = () => {
     } catch (_) {}
   };
 
-  const saveChillMusicTime2 = () => {
-    try {
-      const player = youtubePlayerRef2.current;
-      if (player && player.getCurrentTime) {
-        const t = Math.floor(player.getCurrentTime());
-        localStorage.setItem('chillMusicTime2', String(t));
-      }
-    } catch (_) {}
-  };
+
 
   const playChillMusic = () => {
     userPausedRef.current = false;
@@ -114,15 +108,6 @@ const App: React.FC = () => {
         youtubePlayerRef.current.playVideo();
       }
     } catch (_) {}
-    try {
-      if (youtubePlayerRef2.current && youtubePlayerRef2.current.playVideo) {
-        if (youtubePlayerRef2.current.unMute) {
-          youtubePlayerRef2.current.unMute();
-          if (youtubePlayerRef2.current.setVolume) youtubePlayerRef2.current.setVolume(30);
-        }
-        youtubePlayerRef2.current.playVideo();
-      }
-    } catch (_) {}
   };
 
   const pauseChillMusic = () => {
@@ -130,11 +115,6 @@ const App: React.FC = () => {
     try {
       if (youtubePlayerRef.current && youtubePlayerRef.current.pauseVideo) {
         youtubePlayerRef.current.pauseVideo();
-      }
-    } catch (_) {}
-    try {
-      if (youtubePlayerRef2.current && youtubePlayerRef2.current.pauseVideo) {
-        youtubePlayerRef2.current.pauseVideo();
       }
     } catch (_) {}
   };
@@ -151,6 +131,39 @@ const App: React.FC = () => {
         }
       }, 600);
     } catch (_) {}
+  };
+
+  const handleYoutubeSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!youtubeSearchQuery.trim()) return;
+
+    try {
+      // For now, we'll use a simple approach - you can replace this with actual YouTube API search
+      // For demonstration, we'll use a placeholder video ID
+      const newVideoId = 'dQw4w9WgXcQ'; // This would normally come from YouTube search API
+      setCurrentVideoId(newVideoId);
+      
+      // Update the iframe src
+      const iframe = document.getElementById('chillYoutube') as HTMLIFrameElement;
+      if (iframe) {
+        iframe.src = `https://www.youtube.com/embed/${newVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`;
+      }
+      
+      // Clear search query
+      setYoutubeSearchQuery('');
+      
+      // Reset player reference to force new player creation
+      youtubePlayerRef.current = null;
+      
+      // Reinitialize YouTube player
+      setTimeout(() => {
+        if (window.YT && window.YT.Player) {
+          setupYouTube();
+        }
+      }, 1000);
+    } catch (error) {
+      console.error('YouTube search error:', error);
+    }
   };
 
   // Plant types for gamification
@@ -260,13 +273,12 @@ const App: React.FC = () => {
   // Initialize YouTube player for Chill Music
   useEffect(() => {
     const setupYouTube = () => {
-      if (youtubePlayerRef.current && youtubePlayerRef2.current) return;
+      if (youtubePlayerRef.current) return;
       const iframe = document.getElementById('chillYoutube');
-      const iframe2 = document.getElementById('chillYoutube2');
       if (window.YT && window.YT.Player) {
         if (iframe && !youtubePlayerRef.current) {
           youtubePlayerRef.current = new window.YT.Player('chillYoutube', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1, loop: 1, playlist: 'wmLGG5DYDWQ' },
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1, loop: 1 },
             events: {
               onReady: (event: any) => {
                 try {
@@ -290,38 +302,6 @@ const App: React.FC = () => {
                     if (youtubeSaveIntervalRef.current) {
                       clearInterval(youtubeSaveIntervalRef.current);
                       youtubeSaveIntervalRef.current = null;
-                    }
-
-                  }
-                } catch (_) {}
-              }
-            }
-          });
-        }
-        if (iframe2 && !youtubePlayerRef2.current) {
-          youtubePlayerRef2.current = new window.YT.Player('chillYoutube2', {
-            playerVars: { autoplay: 1, rel: 0, modestbranding: 1, mute: 1, loop: 1, playlist: 'jMZGmWHDbqE' },
-            events: {
-              onReady: (event: any) => {
-                try {
-                  const saved = Number(localStorage.getItem('chillMusicTime2') || '0');
-                  if (!Number.isNaN(saved) && saved > 0) {
-                    event.target.seekTo(saved, true);
-                  }
-                  event.target.setVolume(30);
-                  requestAutoplay(event.target);
-                } catch (_) {}
-              },
-              onStateChange: (event: any) => {
-                try {
-                  if (event.data === 1) {
-                    if (youtubeSaveIntervalRef2.current) clearInterval(youtubeSaveIntervalRef2.current);
-                    youtubeSaveIntervalRef2.current = setInterval(saveChillMusicTime2, 5000);
-                  } else {
-                    saveChillMusicTime2();
-                    if (youtubeSaveIntervalRef2.current) {
-                      clearInterval(youtubeSaveIntervalRef2.current);
-                      youtubeSaveIntervalRef2.current = null;
                     }
 
                   }
@@ -370,7 +350,6 @@ const App: React.FC = () => {
     // Save current time when navigating away
     const handleBeforeUnload = () => {
       saveChillMusicTime();
-      saveChillMusicTime2();
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -383,12 +362,9 @@ const App: React.FC = () => {
         clearInterval(youtubeSaveIntervalRef.current);
         youtubeSaveIntervalRef.current = null;
       }
-      if (youtubeSaveIntervalRef2.current) {
-        clearInterval(youtubeSaveIntervalRef2.current);
-        youtubeSaveIntervalRef2.current = null;
-      }
+
     };
-  }, []);
+  }, [playChillMusic, saveChillMusicTime]);
 
   // Save data to localStorage + push to GUN
   useEffect(() => {
@@ -412,14 +388,14 @@ const App: React.FC = () => {
         node.get('reminderState').put(JSON.stringify(reminderState));
       }
     } catch (_) {}
-  }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive]);
+  }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive, youtubeSearchQuery, currentVideoId]);
 
   // Start eye countdown when modal opens
   useEffect(() => {
     if (showEyeReminder && eyeReminderCountdown === 30) {
       startEyeCountdown();
     }
-  }, [showEyeReminder, eyeReminderCountdown]);
+  }, [showEyeReminder, eyeReminderCountdown, startEyeCountdown]);
 
   const formatTime = (milliseconds: number): string => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -834,41 +810,47 @@ const App: React.FC = () => {
                </div>
              </div>
 
-            {/* Chill Music */}
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-lg font-bold">🎧 Chill Music</h2>
-              </div>
-                             <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
-                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div className="rounded-xl overflow-hidden">
-                  <iframe
-                    id="chillYoutube"
-                    width="100%"
-                    height="160"
-                    src="https://www.youtube.com/embed/wmLGG5DYDWQ?enablejsapi=1&modestbranding=1&rel=0"
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="rounded-xl overflow-hidden">
-                  <iframe
-                    id="chillYoutube2"
-                    width="100%"
-                    height="160"
-                    src="https://www.youtube.com/embed/jMZGmWHDbqE?si=98ihOagVJxkkINf6&enablejsapi=1&modestbranding=1&rel=0"
-                    title="YouTube video player 2"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-              </div>
-            </div>
+                         {/* Chill Music */}
+             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
+               <div className="flex justify-between items-center mb-2">
+                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
+               </div>
+               <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
+               
+               {/* YouTube Search Bar */}
+               <form onSubmit={handleYoutubeSearch} className="mb-3">
+                 <div className="flex gap-2">
+                   <input
+                     type="text"
+                     value={youtubeSearchQuery}
+                     onChange={(e) => setYoutubeSearchQuery(e.target.value)}
+                     placeholder="Search for music..."
+                     className="flex-1 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-blue-500 focus:outline-none"
+                   />
+                   <button
+                     type="submit"
+                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200"
+                   >
+                     Search
+                   </button>
+                 </div>
+               </form>
+               
+               {/* Single YouTube Player */}
+               <div className="rounded-xl overflow-hidden">
+                 <iframe
+                   id="chillYoutube"
+                   width="100%"
+                   height="200"
+                   src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`}
+                   title="YouTube video player"
+                   frameBorder="0"
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                   referrerPolicy="strict-origin-when-cross-origin"
+                   allowFullScreen
+                 ></iframe>
+               </div>
+             </div>
 
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30 flex-1">
