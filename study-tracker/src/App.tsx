@@ -657,7 +657,7 @@ const App: React.FC = () => {
           🌌 Space Focus
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full items-stretch">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
                          <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30">
@@ -666,7 +666,7 @@ const App: React.FC = () => {
                                  <div className="relative w-60 h-60 mb-3">
                   <CircularProgressbar
                     value={getProgressPercentage()}
-                    text={formatTime(cycleSession?.timeLeft || 0)}
+                    text={''}
                     styles={buildStyles({
                       pathColor: getProgressColor(),
                       textColor: '#e5e7eb',
@@ -675,18 +675,21 @@ const App: React.FC = () => {
                     })}
                     strokeWidth={6}
                   />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="timer-bit text-3xl">{formatTime(cycleSession?.timeLeft || 0)}</div>
+                  </div>
                   
                   {/* Phase indicator */}
                   {cycleSession && (
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-16">
-                      <div className={`text-base font-medium ${
+                    <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
+                      <div className={`text-sm font-medium ${
                         cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
                       }`}>
                         {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-            </div>
-            </div>
-          )}
-          </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
           
                 {/* Controls */}
                 <div className="flex gap-2 mb-4">

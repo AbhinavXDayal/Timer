@@ -8,6 +8,13 @@
   box-sizing: border-box;
 }
 
+/* Pixel font (fallback to monospace) */
+@font-face {
+  font-family: 'PressStart2P';
+  src: local('Press Start 2P'), local('PressStart2P');
+  font-display: swap;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -16,6 +23,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: #111827;
   color: #ffffff;
+}
+
+.timer-bit {
+  font-family: 'PressStart2P', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.04em;
 }
 
 /* Custom scrollbar */
