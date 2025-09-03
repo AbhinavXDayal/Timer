@@ -141,6 +141,7 @@ const App: React.FC = () => {
 
   const requestAutoplay = (player: any) => {
     try {
+      // Start muted for autoplay, then unmute on session start/resume
       player.mute && player.mute();
       player.playVideo && player.playVideo();
       // If YouTube auto-pauses, retry shortly unless the user paused
@@ -291,10 +292,7 @@ const App: React.FC = () => {
                       clearInterval(youtubeSaveIntervalRef.current);
                       youtubeSaveIntervalRef.current = null;
                     }
-                    // Kick playback again if auto-paused and not user-initiated
-                    if (!userPausedRef.current) {
-                      requestAutoplay(event.target);
-                    }
+
                   }
                 } catch (_) {}
               }
@@ -326,9 +324,7 @@ const App: React.FC = () => {
                       clearInterval(youtubeSaveIntervalRef2.current);
                       youtubeSaveIntervalRef2.current = null;
                     }
-                    if (!userPausedRef.current) {
-                      requestAutoplay(event.target);
-                    }
+
                   }
                 } catch (_) {}
               }
