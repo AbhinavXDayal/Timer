@@ -168,15 +168,15 @@ const App: React.FC = () => {
 
   // Plant types for gamification
   const plantTypes = [
-    { type: 'tree', emoji: '🌳', name: 'Oak Tree' },
-    { type: 'tree', emoji: '🌲', name: 'Pine Tree' },
-    { type: 'tree', emoji: '🌴', name: 'Palm Tree' },
-    { type: 'flower', emoji: '🌸', name: 'Cherry Blossom' },
-    { type: 'flower', emoji: '🌹', name: 'Rose' },
-    { type: 'flower', emoji: '🌻', name: 'Sunflower' },
-    { type: 'bush', emoji: '🌿', name: 'Fern' },
-    { type: 'bush', emoji: '🍃', name: 'Leaf' },
-  ];
+  { type: 'tree', name: 'Oak Tree', emoji: '🌳' },
+  { type: 'tree', name: 'Pine Tree', emoji: '🌲' },
+  { type: 'tree', name: 'Palm Tree', emoji: '🌴' },
+  { type: 'flower', name: 'Cherry Blossom', emoji: '🌸' },
+  { type: 'flower', name: 'Rose', emoji: '🌹' },
+  { type: 'flower', name: 'Sunflower', emoji: '🌻' },
+  { type: 'bush', name: 'Fern', emoji: '🌿' },
+  { type: 'bush', name: 'Leaf', emoji: '🍃' },
+];
 
   // Load data from localStorage
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -644,7 +644,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
         <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
-          🌌 Space Focus
+          Space Focus 🌌
         </h1>
 
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
@@ -754,7 +754,7 @@ const App: React.FC = () => {
                         <span className={`text-lg ${
                           session.type === 'focus' ? 'text-forest-green' : 'text-yellow-400'
                         }`}>
-                          {session.type === 'focus' ? '🎯' : '☕'}
+                          {session.type === 'focus' ? 'Focus 🎯' : 'Break ☕'}
                         </span>
                         <div>
                           <div className="font-medium text-sm">
@@ -786,7 +786,7 @@ const App: React.FC = () => {
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
-               <h2 className="text-xl font-bold mb-4">👁️ 30-30-30 Rule</h2>
+               <h2 className="text-xl font-bold mb-4">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
@@ -813,7 +813,7 @@ const App: React.FC = () => {
                          {/* Chill Music */}
              <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
                <div className="flex justify-between items-center mb-2">
-                 <h2 className="text-lg font-bold">🎧 Chill Music</h2>
+                 <h2 className="text-lg font-bold">Chill Music 🎧</h2>
                </div>
                <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
                
@@ -855,7 +855,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30 flex-1">
                               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold flex items-center gap-2"><BsStars className="w-5 h-5"/> Your Space</h2>
+                <h2 className="text-xl font-bold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
@@ -876,7 +876,7 @@ const App: React.FC = () => {
                     className="bg-gray-700 rounded-xl p-3 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
                   >
                     <div className="text-2xl mb-1">
-                      <span role="img" aria-label="star">✨</span>
+                      <span role="img" aria-label="star">Star ✨</span>
                     </div>
                     <div className="text-xs text-gray-400">
                       {new Date(plant.plantedAt).toLocaleDateString()}
@@ -887,7 +887,7 @@ const App: React.FC = () => {
 
               {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
-                  <div className="text-3xl mb-2">✨</div>
+                  <div className="text-3xl mb-2">Space ✨</div>
                   <div className="text-sm">Complete focus sessions to light up your space!</div>
             </div>
           )}
@@ -918,7 +918,7 @@ const App: React.FC = () => {
       {showEyeReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
-            <h3 className="text-2xl font-bold mb-4 text-center">👁️ 30-30-30 Rule</h3>
+            <h3 className="text-2xl font-bold mb-4 text-center">30-30-30 Rule 👁️</h3>
             <p className="text-gray-300 mb-6 text-center">
               Look at something 30 feet away for 30 seconds to reduce eye strain.
             </p>
