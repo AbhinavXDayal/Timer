@@ -67,7 +67,6 @@ const App: React.FC = () => {
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
-  const [showRefreshMessage, setShowRefreshMessage] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -234,17 +233,7 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
-      }, []); // Removed dependencies to avoid circular references
-
-  // Show refresh message for 1 minute on page load
-  useEffect(() => {
-    setShowRefreshMessage(true);
-    const timer = setTimeout(() => {
-      setShowRefreshMessage(false);
-    }, 60 * 1000); // 1 minute
-
-    return () => clearTimeout(timer);
-  }, []);
+  }, []); // Removed dependencies to avoid circular references
 
   // Initialize YouTube player for Chill Music
   useEffect(() => {
@@ -686,23 +675,6 @@ const App: React.FC = () => {
         <h1 className="text-2xl font-bold text-center mb-3 text-forest-green font-serif">
           Space Focus 🌌
         </h1>
-        
-        {/* Refresh Message */}
-        {showRefreshMessage && (
-          <div className="mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
-                <p className="text-sm text-purple-200">No sessions recorded yet. Start your first focus session!</p>
-              </div>
-              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
-                <p className="text-sm text-purple-200">Look at something 30 feet away for 30 seconds</p>
-              </div>
-              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
-                <p className="text-sm text-purple-200">Complete focus sessions to light up your space!</p>
-              </div>
-            </div>
-          </div>
-        )}
 
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
