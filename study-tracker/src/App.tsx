@@ -673,14 +673,14 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
-        <h1 className="text-2xl font-bold text-center mb-3 text-forest-green">
+        <h1 className="text-2xl font-bold text-center mb-3 text-forest-green font-serif">
           Space Focus 🌌
         </h1>
 
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[350px]">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
               <div className="flex flex-col items-center">
                 {/* Minimal Circular Timer */}
                 <div className="relative w-60 h-60 mb-2">
@@ -740,9 +740,9 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[270px]">
+            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[278px]">
                              <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-lg font-semibold">Session History</h2>
+                 <h2 className="text-lg font-semibold font-serif">Session History</h2>
                  <button 
                    onClick={clearHistory}
                    className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -765,24 +765,24 @@ const App: React.FC = () => {
                           {session.type === 'focus' ? 'Focus 🎯' : 'Break ☕'}
                         </span>
                         <div>
-                          <div className="font-medium text-sm">
+                          <div className="font-medium text-sm font-sans">
                             {session.type === 'focus' ? 'Focus' : 'Break'}
                           </div>
-                          <div className="text-xs text-gray-400">{session.duration}</div>
+                          <div className="text-xs text-gray-400 font-sans">{session.duration}</div>
                         </div>
                       </div>
                                              <div className="text-right">
-                         <div className="text-xs text-gray-400">
+                         <div className="text-xs text-gray-400 font-sans">
                            {session.startTime} - {session.endTime}
                          </div>
-                         <div className="text-xs text-gray-500">
+                         <div className="text-xs text-gray-500 font-sans">
                            {session.date}
                          </div>
                        </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-400 py-3 col-span-2">
+                  <div className="text-center text-gray-400 py-3 col-span-2 font-sans">
                     No sessions recorded yet. Start your first focus session!
                   </div>
                 )}
@@ -794,23 +794,23 @@ const App: React.FC = () => {
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1 min-h-[200px]">
-               <h2 className="text-base font-semibold mb-3">30-30-30 Rule 👁️</h2>
+               <h2 className="text-base font-semibold mb-3 font-serif">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
                      <div className="text-2xl font-bold text-[#a08dcc] mb-2">
                        {formatTime(eyeRuleTimer)}
                      </div>
-                     <div className="text-xs text-gray-400">
+                     <div className="text-xs text-gray-400 font-sans">
                        Look at something 30 feet away for 30 seconds
                      </div>
                    </>
                                    ) : (
                     <>
-                      <div className="text-2xl font-bold text-gray-400 mb-2">
+                      <div className="text-2xl font-bold text-gray-400 mb-2 font-sans">
                         30:00
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 font-sans">
                         Start a focus session to begin the timer
                       </div>
                     </>
@@ -821,9 +821,9 @@ const App: React.FC = () => {
                          {/* Chill Music */}
              <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-2">
                <div className="flex justify-between items-center mb-2">
-                 <h2 className="text-base font-semibold">Chill Music 🎧</h2>
+                 <h2 className="text-base font-semibold font-serif">Chill Music 🎧</h2>
                </div>
-               <p className="text-xs text-gray-400 mb-2">Volume is set to about 30% so tutorials stay audible.</p>
+              <p className="text-xs text-gray-400 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible.</p>
                
                
                {/* Single YouTube Player */}
@@ -845,7 +845,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1">
                               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-semibold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
+                <h2 className="text-lg font-semibold flex items-center gap-2 font-serif">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -855,8 +855,8 @@ const App: React.FC = () => {
               </div>
               
               <div className="text-center mb-3">
-                <div className="text-2xl font-bold text-forest-green">{forest.length}</div>
-                <div className="text-xs text-gray-400">Stars Collected</div>
+                <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
+                <div className="text-xs text-gray-400 font-sans">Stars Collected</div>
               </div>
 
               <div className="grid grid-cols-3 gap-3 flex-1">
@@ -877,8 +877,8 @@ const App: React.FC = () => {
 
               {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
-                  <div className="text-2xl mb-1">Space ✨</div>
-                  <div className="text-sm">Complete focus sessions to light up your space!</div>
+                  <div className="text-2xl mb-1 font-serif">Space ✨</div>
+                  <div className="text-sm font-sans">Complete focus sessions to light up your space!</div>
             </div>
           )}
             </div>
