@@ -680,10 +680,10 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-                         <div className="bg-gray-800/50 rounded-2xl p-2 shadow-lg border border-gray-700/30">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
-                {/* Circular Timer */}
-                                <div className="relative w-52 h-52 mb-2">
+                {/* Minimal Circular Timer */}
+                <div className="relative w-52 h-52 mb-3">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -696,68 +696,52 @@ const App: React.FC = () => {
                     strokeWidth={6}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="timer-bit text-3xl">{formatTime(cycleSession?.timeLeft || 0)}</div>
+                    <div className="timer-bit text-3xl tracking-wide">{formatTime(cycleSession?.timeLeft || 0)}</div>
                   </div>
-                  
-                  {/* Phase indicator */}
-                  {cycleSession && (
-                    <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2">
-                      <div className={`text-sm font-medium ${
-                        cycleSession.currentPhase === 'focus' ? 'text-gray-300' : 'text-gray-400'
-                      }`}>
-                        {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-            </div>
-            </div>
-          )}
-          </div>
+                </div>
 
-                
-          
-                {/* Controls */}
-                <div className="flex items-center gap-3 mb-3">
+                {/* Minimal Controls */}
+                <div className="flex items-center gap-2 mb-1">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
-                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-6 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105"
+                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-md font-medium transition-colors"
                     >
-                      Start Focus Session
+                      Start
                     </button>
                   ) : (
                     <>
                       {cycleSession.isPaused ? (
                         <button
                           onClick={resumeSession}
-                          className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
+                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-md font-medium transition-colors"
                         >
                           Resume
-            </button>
-          ) : (
+                        </button>
+                      ) : (
                         <button
                           onClick={pauseSession}
-                          className="bg-forest-green/20 hover:bg-forest-green/30 text-gray-200 px-5 py-2 rounded-lg font-semibold transition-all duration-200"
+                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-md font-medium transition-colors"
                         >
                           Pause
-            </button>
-          )}
+                        </button>
+                      )}
                       <button
                         onClick={stopSession}
-                        className="text-gray-400 hover:text-red-400 underline-offset-4 hover:underline transition-colors duration-200"
+                        className="text-gray-400 hover:text-red-400 px-2 py-2 rounded-md transition-colors"
                       >
                         Stop
                       </button>
-                      </>
-                    )}
-                  </div>
-
-                {/* Status */}
-                <div className={`text-sm font-medium ${
-                  cycleSession?.isActive ? 'text-gray-300' : 'text-gray-500'
-                }`}>
-                  {cycleSession?.isActive 
-                    ? (cycleSession.isPaused ? 'Session Paused' : 'Session Active')
-                    : 'No active session'
-                  }
+                    </>
+                  )}
                 </div>
+
+                {/* Subtle phase label */}
+                {cycleSession && (
+                  <div className="text-xs text-gray-400">
+                    {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -767,7 +751,7 @@ const App: React.FC = () => {
                  <h2 className="text-xl font-bold">Session History</h2>
                  <button 
                    onClick={clearHistory}
-                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
+                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm px-2 py-1"
                  >
                    Clear
                  </button>
@@ -778,7 +762,7 @@ const App: React.FC = () => {
                    sessionHistory.slice(0, 12).map((session) => (
                     <div
                       key={session.id}
-                      className="bg-gray-700 rounded-xl p-2 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
+                      className="bg-gray-700 rounded-xl p-3 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
                     >
                       <div className="flex items-center gap-2">
                         <span className={`text-lg ${
@@ -870,7 +854,7 @@ const App: React.FC = () => {
                 <h2 className="text-xl font-bold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
-                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm"
+                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm px-2 py-1"
                 >
                   Clear Space
                 </button>
@@ -885,7 +869,7 @@ const App: React.FC = () => {
                 {forest.map((plant) => (
                   <div
                     key={plant.id}
-                    className="bg-gray-700 rounded-xl p-2 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
+                    className="bg-gray-700 rounded-xl p-2.5 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
                   >
                     <div className="text-xl mb-1">
                       <span role="img" aria-label="star">Star ✨</span>
