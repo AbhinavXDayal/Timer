@@ -680,7 +680,7 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[350px]">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
                 <div className="flex-1 flex items-center justify-center w-full">
