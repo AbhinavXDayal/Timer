@@ -66,7 +66,6 @@ const App: React.FC = () => {
   const [eyeReminderCountdown, setEyeReminderCountdown] = useState(30);
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
-  const [youtubeSearchQuery, setYoutubeSearchQuery] = useState('');
   const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -132,40 +131,7 @@ const App: React.FC = () => {
       }, 600);
     } catch (_) {}
   }, []);
-
-  const handleYoutubeSearch = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!youtubeSearchQuery.trim()) return;
-
-    try {
-      // For now, we'll use a simple approach - you can replace this with actual YouTube API search
-      // For demonstration, we'll use a placeholder video ID
-      const newVideoId = 'dQw4w9WgXcQ'; // This would normally come from YouTube search API
-      setCurrentVideoId(newVideoId);
-      
-      // Update the iframe src
-      const iframe = document.getElementById('chillYoutube') as HTMLIFrameElement;
-      if (iframe) {
-        iframe.src = `https://www.youtube.com/embed/${newVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`;
-      }
-      
-      // Clear search query
-      setYoutubeSearchQuery('');
-      
-      // Reset player reference to force new player creation
-      youtubePlayerRef.current = null;
-      
-      // Reinitialize YouTube player
-      setTimeout(() => {
-        if (window.YT && window.YT.Player) {
-          setupYouTube();
-        }
-      }, 1000);
-    } catch (error) {
-      console.error('YouTube search error:', error);
-    }
-  }, [youtubeSearchQuery, setCurrentVideoId, setYoutubeSearchQuery]);
-
+  
   // Plant types for gamification
   const plantTypes = [
   { type: 'tree', name: 'Oak Tree', emoji: '🌳' },
@@ -388,7 +354,7 @@ const App: React.FC = () => {
         node.get('reminderState').put(JSON.stringify(reminderState));
       }
     } catch (_) {}
-  }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive, youtubeSearchQuery, currentVideoId]);
+  }, [cycleSession, sessionHistory, forest, reminderState, eyeRuleTimer, eyeRuleActive, currentVideoId]);
 
   // Start eye countdown when modal opens
   useEffect(() => {
@@ -881,24 +847,6 @@ const App: React.FC = () => {
                </div>
                <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
                
-               {/* YouTube Search Bar */}
-               <form onSubmit={handleYoutubeSearch} className="mb-3">
-                 <div className="flex gap-2">
-                   <input
-                     type="text"
-                     value={youtubeSearchQuery}
-                     onChange={(e) => setYoutubeSearchQuery(e.target.value)}
-                     placeholder="Search for music..."
-                     className="flex-1 bg-gray-700 text-white px-3 py-2 rounded-lg text-sm border border-gray-600 focus:border-blue-500 focus:outline-none"
-                   />
-                   <button
-                     type="submit"
-                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200"
-                   >
-                     Search
-                   </button>
-                 </div>
-               </form>
                
                {/* Single YouTube Player */}
                <div className="rounded-xl overflow-hidden">
