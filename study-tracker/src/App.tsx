@@ -677,7 +677,7 @@ const App: React.FC = () => {
           Space Focus 🌌
         </h1>
 
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6rem)]">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-5rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
@@ -799,7 +799,7 @@ const App: React.FC = () => {
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
-             <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1">
+             <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1 min-h-[220px]">
                <h2 className="text-lg font-bold mb-3">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
