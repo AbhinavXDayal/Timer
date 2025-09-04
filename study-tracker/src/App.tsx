@@ -67,6 +67,7 @@ const App: React.FC = () => {
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
+  const [showWelcomeMessages, setShowWelcomeMessages] = useState(true);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -143,6 +144,15 @@ const App: React.FC = () => {
   { type: 'bush', name: 'Fern', emoji: '🌿' },
   { type: 'bush', name: 'Leaf', emoji: '🍃' },
 ];
+
+  // Hide welcome messages after 1 minute
+  useEffect(() => {
+    const welcomeTimer = setTimeout(() => {
+      setShowWelcomeMessages(false);
+    }, 60 * 1000); // 1 minute
+
+    return () => clearTimeout(welcomeTimer);
+  }, []);
 
   // Load data from localStorage
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -784,7 +794,7 @@ const App: React.FC = () => {
                   ))
                 ) : (
                   <div className="text-center text-gray-400 py-3 col-span-2 font-sans">
-                    No sessions recorded yet. Start your first focus session!
+                    {showWelcomeMessages ? "No sessions recorded yet. Start your first focus session!" : ""}
                   </div>
                 )}
               </div>
@@ -803,7 +813,7 @@ const App: React.FC = () => {
                        {formatTime(eyeRuleTimer)}
                      </div>
                      <div className="text-xs text-gray-400 font-sans">
-                       Look at something 30 feet away for 30 seconds
+                       {showWelcomeMessages ? "Look at something 30 feet away for 30 seconds" : ""}
                      </div>
                    </>
                                    ) : (
@@ -879,7 +889,7 @@ const App: React.FC = () => {
               {forest.length === 0 && (
                 <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
                   <div className="text-2xl mb-1 font-serif">Space ✨</div>
-                  <div className="text-sm font-sans">Complete focus sessions to light up your space!</div>
+                  <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
             </div>
           )}
             </div>
