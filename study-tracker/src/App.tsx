@@ -234,7 +234,7 @@ const App: React.FC = () => {
     if (savedEyeRuleActive) {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
-  }, []); // Removed dependencies to avoid circular references
+      }, []); // Removed dependencies to avoid circular references
 
   // Show refresh message for 1 minute on page load
   useEffect(() => {
@@ -689,8 +689,18 @@ const App: React.FC = () => {
         
         {/* Refresh Message */}
         {showRefreshMessage && (
-          <div className="bg-blue-600 text-white p-4 rounded-lg mb-4 text-center animate-pulse">
-            <p className="text-lg font-semibold">Welcome back! Your session has been restored.</p>
+          <div className="mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
+                <p className="text-sm text-purple-200">No sessions recorded yet. Start your first focus session!</p>
+              </div>
+              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
+                <p className="text-sm text-purple-200">Look at something 30 feet away for 30 seconds</p>
+              </div>
+              <div className="bg-purple-600/20 border border-purple-400/30 rounded-lg p-4 text-center animate-pulse">
+                <p className="text-sm text-purple-200">Complete focus sessions to light up your space!</p>
+              </div>
+            </div>
           </div>
         )}
 
