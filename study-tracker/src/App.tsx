@@ -673,17 +673,17 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
       <div className="max-w-7xl mx-auto h-full">
-        <h1 className="text-3xl font-bold text-center mb-4 text-forest-green">
+        <h1 className="text-2xl font-bold text-center mb-3 text-forest-green">
           Space Focus 🌌
         </h1>
 
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-                         <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
+                         <div className="bg-gray-800/50 rounded-2xl p-2 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Circular Timer */}
-                                <div className="relative w-56 h-56 mb-2">
+                                <div className="relative w-48 h-48 mb-2">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -714,7 +714,7 @@ const App: React.FC = () => {
                 
           
                 {/* Controls */}
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
@@ -762,8 +762,8 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-2xl p-5 mt-4 shadow-lg border border-gray-700/30 flex-1">
-                             <div className="flex justify-between items-center mb-4">
+            <div className="bg-gray-800/50 rounded-2xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1">
+                             <div className="flex justify-between items-center mb-3">
                  <h2 className="text-xl font-bold">Session History</h2>
                  <button 
                    onClick={clearHistory}
@@ -778,7 +778,7 @@ const App: React.FC = () => {
                    sessionHistory.slice(0, 12).map((session) => (
                     <div
                       key={session.id}
-                      className="bg-gray-700 rounded-xl p-3 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
+                      className="bg-gray-700 rounded-xl p-2 flex justify-between items-center hover:bg-gray-600 transition-colors duration-300"
                     >
                       <div className="flex items-center gap-2">
                         <span className={`text-lg ${
@@ -804,7 +804,7 @@ const App: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-400 py-4 col-span-2">
+                  <div className="text-center text-gray-400 py-3 col-span-2">
                     No sessions recorded yet. Start your first focus session!
                   </div>
                 )}
@@ -815,12 +815,12 @@ const App: React.FC = () => {
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
-             <div className="bg-gray-800/50 rounded-2xl p-6 shadow-lg border border-gray-700/30 mb-6 flex-1">
-               <h2 className="text-xl font-bold mb-4">30-30-30 Rule 👁️</h2>
+             <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1">
+               <h2 className="text-lg font-bold mb-3">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
-                     <div className="text-3xl font-bold text-[#a08dcc] mb-2">
+                     <div className="text-2xl font-bold text-[#a08dcc] mb-2">
                        {formatTime(eyeRuleTimer)}
                      </div>
                      <div className="text-xs text-gray-400">
@@ -829,7 +829,7 @@ const App: React.FC = () => {
                    </>
                                    ) : (
                     <>
-                      <div className="text-3xl font-bold text-gray-400 mb-2">
+                      <div className="text-2xl font-bold text-gray-400 mb-2">
                         30:00
                       </div>
                       <div className="text-xs text-gray-500">
@@ -841,11 +841,11 @@ const App: React.FC = () => {
              </div>
 
                          {/* Chill Music */}
-             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 mb-3">
+             <div className="bg-gray-800/50 rounded-2xl p-2 shadow-lg border border-gray-700/30 mb-2">
                <div className="flex justify-between items-center mb-2">
                  <h2 className="text-lg font-bold">Chill Music 🎧</h2>
                </div>
-               <p className="text-xs text-gray-400 mb-3">Volume is set to about 30% so tutorials stay audible.</p>
+               <p className="text-xs text-gray-400 mb-2">Volume is set to about 30% so tutorials stay audible.</p>
                
                
                {/* Single YouTube Player */}
@@ -853,7 +853,7 @@ const App: React.FC = () => {
                  <iframe
                    id="chillYoutube"
                    width="100%"
-                   height="200"
+                   height="160"
                    src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`}
                    title="YouTube video player"
                    frameBorder="0"
@@ -865,8 +865,8 @@ const App: React.FC = () => {
              </div>
 
             {/* Forest Section */}
-            <div className="bg-gray-800/50 rounded-2xl p-5 shadow-lg border border-gray-700/30 flex-1">
-                              <div className="flex justify-between items-center mb-4">
+            <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 flex-1">
+                              <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-bold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
@@ -876,8 +876,8 @@ const App: React.FC = () => {
                 </button>
               </div>
               
-              <div className="text-center mb-4">
-                <div className="text-3xl font-bold text-forest-green">{forest.length}</div>
+              <div className="text-center mb-3">
+                <div className="text-2xl font-bold text-forest-green">{forest.length}</div>
                 <div className="text-sm text-gray-400">Stars Collected</div>
               </div>
 
@@ -885,9 +885,9 @@ const App: React.FC = () => {
                 {forest.map((plant) => (
                   <div
                     key={plant.id}
-                    className="bg-gray-700 rounded-xl p-3 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
+                    className="bg-gray-700 rounded-xl p-2 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
                   >
-                    <div className="text-2xl mb-1">
+                    <div className="text-xl mb-1">
                       <span role="img" aria-label="star">Star ✨</span>
                     </div>
                     <div className="text-xs text-gray-400">
@@ -898,8 +898,8 @@ const App: React.FC = () => {
               </div>
 
               {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-6 flex-1 flex flex-col justify-center">
-                  <div className="text-3xl mb-2">Space ✨</div>
+                <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
+                  <div className="text-2xl mb-1">Space ✨</div>
                   <div className="text-sm">Complete focus sessions to light up your space!</div>
             </div>
           )}
@@ -911,14 +911,14 @@ const App: React.FC = () => {
       {/* Break Reminder Modal */}
       {showBreakReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
-            <h3 className="text-2xl font-bold mb-4 text-center">⏰ Time for a Break!</h3>
-            <p className="text-gray-300 mb-6 text-center">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+            <h3 className="text-xl font-bold mb-3 text-center">⏰ Time for a Break!</h3>
+            <p className="text-gray-300 mb-4 text-center">
               You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.
             </p>
             <button
               onClick={dismissBreakReminder}
-              className="w-full bg-forest-green hover:bg-forest-dark text-white py-3 rounded-xl font-semibold transition-colors duration-300"
+              className="w-full bg-forest-green hover:bg-forest-dark text-white py-2 rounded-xl font-semibold transition-colors duration-300"
             >
               Got it!
             </button>
@@ -929,15 +929,15 @@ const App: React.FC = () => {
       {/* Eye Reminder Modal */}
       {showEyeReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
-            <h3 className="text-2xl font-bold mb-4 text-center">30-30-30 Rule 👁️</h3>
-            <p className="text-gray-300 mb-6 text-center">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+            <h3 className="text-xl font-bold mb-3 text-center">30-30-30 Rule 👁️</h3>
+            <p className="text-gray-300 mb-4 text-center">
               Look at something 30 feet away for 30 seconds to reduce eye strain.
             </p>
             
             {/* Countdown Timer */}
-            <div className="text-center mb-6">
-              <div className="text-4xl font-bold text-[#a08dcc] mb-2">
+            <div className="text-center mb-4">
+              <div className="text-3xl font-bold text-[#a08dcc] mb-2">
                 {eyeReminderCountdown}s
               </div>
               <div className="text-sm text-gray-400">
@@ -947,7 +947,7 @@ const App: React.FC = () => {
             
             <button
               onClick={dismissEyeReminder}
-              className="w-full bg-[#a08dcc] hover:bg-[#a08dcc] text-white py-3 rounded-xl font-semibold transition-colors duration-300"
+              className="w-full bg-[#a08dcc] hover:bg-[#a08dcc] text-white py-2 rounded-xl font-semibold transition-colors duration-300"
             >
               Dismiss
             </button>
