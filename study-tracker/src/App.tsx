@@ -681,27 +681,29 @@ const App: React.FC = () => {
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[330px]">
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
-                <div className="relative w-52 h-52 mb-2">
-                  <CircularProgressbar
-                    value={getProgressPercentage()}
-                    text={''}
-                    styles={buildStyles({
-                      pathColor: getProgressColor(),
-                      textColor: '#e5e7eb',
-                      trailColor: '#374151',
-                      strokeLinecap: 'round',
-                    })}
-                    strokeWidth={5}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="timer-bit text-3xl tracking-wide">{formatTime(cycleSession?.timeLeft || 0)}</div>
+                <div className="flex-1 flex items-center justify-center w-full">
+                  <div className="relative w-52 h-52">
+                    <CircularProgressbar
+                      value={getProgressPercentage()}
+                      text={''}
+                      styles={buildStyles({
+                        pathColor: getProgressColor(),
+                        textColor: '#e5e7eb',
+                        trailColor: '#374151',
+                        strokeLinecap: 'round',
+                      })}
+                      strokeWidth={5}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="timer-bit text-3xl tracking-wide">{formatTime(cycleSession?.timeLeft || 0)}</div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Minimal Controls */}
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mt-2">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
