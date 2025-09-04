@@ -680,10 +680,10 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[300px]">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[220px]">
               <div className="flex flex-col items-center">
                 {/* Minimal Circular Timer */}
-                <div className="relative w-56 h-56 mb-2">
+                <div className="relative w-44 h-44 mb-2">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -740,7 +740,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[300px]">
+            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[220px]">
                              <div className="flex justify-between items-center mb-3">
                  <h2 className="text-lg font-semibold font-serif">Session History</h2>
                  <button 
