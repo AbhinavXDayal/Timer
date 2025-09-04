@@ -690,6 +690,7 @@ const App: React.FC = () => {
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
+              <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
                 <div className="flex-1 flex items-center justify-center w-full">
