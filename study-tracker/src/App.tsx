@@ -740,12 +740,12 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-2xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1">
+            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1">
                              <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-xl font-bold">Session History</h2>
+                 <h2 className="text-lg font-semibold">Session History</h2>
                  <button 
                    onClick={clearHistory}
-                   className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm px-2 py-1"
+                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
                  >
                    Clear
                  </button>
@@ -793,8 +793,8 @@ const App: React.FC = () => {
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
-             <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1 min-h-[200px]">
-               <h2 className="text-lg font-bold mb-3">30-30-30 Rule 👁️</h2>
+             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1 min-h-[200px]">
+               <h2 className="text-base font-semibold mb-3">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
@@ -819,9 +819,9 @@ const App: React.FC = () => {
              </div>
 
                          {/* Chill Music */}
-             <div className="bg-gray-800/50 rounded-2xl p-2 shadow-lg border border-gray-700/30 mb-2">
+             <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-2">
                <div className="flex justify-between items-center mb-2">
-                 <h2 className="text-lg font-bold">Chill Music 🎧</h2>
+                 <h2 className="text-base font-semibold">Chill Music 🎧</h2>
                </div>
                <p className="text-xs text-gray-400 mb-2">Volume is set to about 30% so tutorials stay audible.</p>
                
@@ -843,12 +843,12 @@ const App: React.FC = () => {
              </div>
 
             {/* Forest Section */}
-            <div className="bg-gray-800/50 rounded-2xl p-4 shadow-lg border border-gray-700/30 flex-1">
+            <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1">
                               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-bold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
+                <h2 className="text-lg font-semibold flex items-center gap-2">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
-                  className="text-gray-400 hover:text-red-400 transition-colors duration-300 text-sm px-2 py-1"
+                  className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
                 >
                   Clear Space
                 </button>
@@ -856,7 +856,7 @@ const App: React.FC = () => {
               
               <div className="text-center mb-3">
                 <div className="text-2xl font-bold text-forest-green">{forest.length}</div>
-                <div className="text-sm text-gray-400">Stars Collected</div>
+                <div className="text-xs text-gray-400">Stars Collected</div>
               </div>
 
               <div className="grid grid-cols-3 gap-3 flex-1">
