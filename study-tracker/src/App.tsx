@@ -820,7 +820,7 @@ const App: React.FC = () => {
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
-                     <div className="text-3xl font-bold text-blue-400 mb-2">
+                     <div className="text-3xl font-bold text-purple-400 mb-2">
                        {formatTime(eyeRuleTimer)}
                      </div>
                      <div className="text-xs text-gray-400">
@@ -937,7 +937,7 @@ const App: React.FC = () => {
             
             {/* Countdown Timer */}
             <div className="text-center mb-6">
-              <div className="text-4xl font-bold text-blue-400 mb-2">
+              <div className="text-4xl font-bold text-purple-400 mb-2">
                 {eyeReminderCountdown}s
               </div>
               <div className="text-sm text-gray-400">
@@ -947,7 +947,7 @@ const App: React.FC = () => {
             
             <button
               onClick={dismissEyeReminder}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold transition-colors duration-300"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-xl font-semibold transition-colors duration-300"
             >
               Dismiss
             </button>
