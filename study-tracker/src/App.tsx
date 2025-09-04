@@ -693,7 +693,7 @@ const App: React.FC = () => {
                       trailColor: '#374151',
                       strokeLinecap: 'round',
                     })}
-                    strokeWidth={6}
+                    strokeWidth={5}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="timer-bit text-3xl tracking-wide">{formatTime(cycleSession?.timeLeft || 0)}</div>
@@ -705,7 +705,7 @@ const App: React.FC = () => {
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
-                      className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-md font-medium transition-colors"
+                      className="text-gray-300 hover:text-white px-2 py-1 rounded-md hover:bg-gray-700/40 transition-colors"
                     >
                       Start
                     </button>
@@ -714,34 +714,28 @@ const App: React.FC = () => {
                       {cycleSession.isPaused ? (
                         <button
                           onClick={resumeSession}
-                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-md font-medium transition-colors"
+                          className="text-gray-300 hover:text-white px-2 py-1 rounded-md hover:bg-gray-700/40 transition-colors"
                         >
                           Resume
                         </button>
                       ) : (
                         <button
                           onClick={pauseSession}
-                          className="bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-2 rounded-md font-medium transition-colors"
+                          className="text-gray-300 hover:text-white px-2 py-1 rounded-md hover:bg-gray-700/40 transition-colors"
                         >
                           Pause
                         </button>
                       )}
                       <button
                         onClick={stopSession}
-                        className="text-gray-400 hover:text-red-400 px-2 py-2 rounded-md transition-colors"
+                        className="text-gray-400 hover:text-red-400 px-2 py-1 rounded-md transition-colors"
                       >
                         Stop
                       </button>
                     </>
                   )}
                 </div>
-
-                {/* Subtle phase label */}
-                {cycleSession && (
-                  <div className="text-xs text-gray-400">
-                    {cycleSession.currentPhase === 'focus' ? 'Focus' : 'Break'}
-                  </div>
-                )}
+                
               </div>
             </div>
 
