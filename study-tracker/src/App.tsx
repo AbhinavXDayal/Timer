@@ -683,7 +683,7 @@ const App: React.FC = () => {
             <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30">
               <div className="flex flex-col items-center">
                 {/* Minimal Circular Timer */}
-                <div className="relative w-52 h-52 mb-3">
+                <div className="relative w-52 h-52 mb-2">
                   <CircularProgressbar
                     value={getProgressPercentage()}
                     text={''}
@@ -837,7 +837,7 @@ const App: React.FC = () => {
                  <iframe
                    id="chillYoutube"
                    width="100%"
-                   height="180"
+                   height="170"
                    src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`}
                    title="YouTube video player"
                    frameBorder="0"
