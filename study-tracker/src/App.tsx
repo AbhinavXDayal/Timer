@@ -793,7 +793,7 @@ const App: React.FC = () => {
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
-             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-4 flex-1 min-h-[200px]">
+             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[200px]">
                <h2 className="text-base font-semibold mb-3 font-serif">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
@@ -819,7 +819,7 @@ const App: React.FC = () => {
              </div>
 
                          {/* Chill Music */}
-             <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-2">
+             <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-3">
                <div className="flex justify-between items-center mb-2">
                  <h2 className="text-base font-semibold font-serif">Chill Music 🎧</h2>
                </div>
