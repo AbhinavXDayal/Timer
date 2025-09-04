@@ -26,8 +26,8 @@ body {
 }
 
 .timer-bit {
-  font-family: 'PressStart2P', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: 0.04em;
+  font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  letter-spacing: 0.02em;
 }
 
 /* Dot matrix panel */
