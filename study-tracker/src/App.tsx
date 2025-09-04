@@ -67,6 +67,7 @@ const App: React.FC = () => {
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
+  const [showRefreshMessage, setShowRefreshMessage] = useState(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const breakIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -234,6 +235,16 @@ const App: React.FC = () => {
       setEyeRuleActive(JSON.parse(savedEyeRuleActive));
     }
   }, []); // Removed dependencies to avoid circular references
+
+  // Show refresh message for 1 minute on page load
+  useEffect(() => {
+    setShowRefreshMessage(true);
+    const timer = setTimeout(() => {
+      setShowRefreshMessage(false);
+    }, 60 * 1000); // 1 minute
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Initialize YouTube player for Chill Music
   useEffect(() => {
@@ -675,6 +686,13 @@ const App: React.FC = () => {
         <h1 className="text-2xl font-bold text-center mb-3 text-forest-green font-serif">
           Space Focus 🌌
         </h1>
+        
+        {/* Refresh Message */}
+        {showRefreshMessage && (
+          <div className="bg-blue-600 text-white p-4 rounded-lg mb-4 text-center animate-pulse">
+            <p className="text-lg font-semibold">Welcome back! Your session has been restored.</p>
+          </div>
+        )}
 
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
