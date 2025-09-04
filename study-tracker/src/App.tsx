@@ -165,8 +165,7 @@ const App: React.FC = () => {
       let spaceId = url.searchParams.get('space');
       if (!spaceId) {
         spaceId = Math.random().toString(36).slice(2, 10);
-        url.searchParams.set('space', spaceId);
-        window.history.replaceState(null, '', url.toString());
+        // Don't add space parameter to URL to keep it clean
       }
       spaceIdRef.current = spaceId;
 
