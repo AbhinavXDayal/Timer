@@ -677,10 +677,10 @@ const App: React.FC = () => {
           Space Focus 🌌
         </h1>
 
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6rem)]">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[320px]">
+            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[300px]">
               <div className="flex flex-col items-center">
                 {/* Minimal Circular Timer */}
                 <div className="relative w-56 h-56 mb-2">
@@ -740,7 +740,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Session History - Compact Version */}
-            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[320px]">
+            <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[300px]">
                              <div className="flex justify-between items-center mb-3">
                  <h2 className="text-lg font-semibold font-serif">Session History</h2>
                  <button 
@@ -793,7 +793,7 @@ const App: React.FC = () => {
           {/* Right Side - Forest and Eye Timer */}
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
-             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[240px]">
+             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
                <h2 className="text-base font-semibold mb-3 font-serif">30-30-30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
@@ -819,7 +819,7 @@ const App: React.FC = () => {
              </div>
 
                          {/* Chill Music */}
-             <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-3 min-h-[240px]">
+             <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-3 min-h-[220px]">
                <div className="flex justify-between items-center mb-2">
                  <h2 className="text-base font-semibold font-serif">Chill Music 🎧</h2>
                </div>
@@ -831,7 +831,7 @@ const App: React.FC = () => {
                  <iframe
                    id="chillYoutube"
                    width="100%"
-                   height="170"
+                   height="160"
                    src={`https://www.youtube.com/embed/${currentVideoId}?enablejsapi=1&modestbranding=1&rel=0&autoplay=1&mute=1`}
                    title="YouTube video player"
                    frameBorder="0"
@@ -843,7 +843,7 @@ const App: React.FC = () => {
              </div>
 
             {/* Forest Section */}
-            <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1 min-h-[240px]">
+            <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1 min-h-[220px]">
                               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-lg font-semibold flex items-center gap-2 font-serif">Your Space <BsStars className="w-5 h-5"/></h2>
                 <button
