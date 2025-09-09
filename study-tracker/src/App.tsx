@@ -206,8 +206,20 @@ const App: React.FC = () => {
         // If session was paused, restore it from the paused state
         setCycleSession(session);
       } else if (session.isActive && !session.isPaused) {
-        // If session was running (not paused), clear it to start fresh
-        localStorage.removeItem('cycleSession');
+        // If session was running (resumed), restore it and recalculate remaining time
+        const elapsedMs = Date.now() - session.startTime;
+        const remainingMs = Math.max(session.totalTime - elapsedMs, 0);
+        const updatedSession: CycleSession = { ...session, timeLeft: remainingMs };
+
+        if (remainingMs > 0) {
+          setCycleSession(updatedSession);
+          startTimer(updatedSession);
+          playChillMusic();
+        } else {
+          // Session would have completed while the app was closed
+          setCycleSession(null);
+          stopReminders();
+        }
       }
     }
 
