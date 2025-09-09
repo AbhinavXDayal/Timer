@@ -774,7 +774,7 @@ const App: React.FC = () => {
                         <span className={`text-lg ${
                           session.type === 'focus' ? 'text-forest-green' : 'text-yellow-400'
                         }`}>
-                          {session.type === 'focus' ? 'Focus 🎯' : 'Break ☕'}
+                          {session.type === 'focus' ? 'Focus' : 'Break'}
                         </span>
                         <div>
                           <div className="font-medium text-sm font-sans">
@@ -806,7 +806,7 @@ const App: React.FC = () => {
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
-               <h2 className="text-base font-semibold mb-3 font-serif">30-30-30 Rule 👁️</h2>
+               <h2 className="text-base font-semibold mb-3 font-serif">30 30 30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full">
                  {eyeRuleActive ? (
                    <>
@@ -835,7 +835,7 @@ const App: React.FC = () => {
                <div className="flex justify-between items-center mb-2">
                  <h2 className="text-base font-semibold font-serif">Chill Music 🎧</h2>
                </div>
-              <p className="text-xs text-gray-400 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible.</p>
+              <p className="text-xs text-gray-400 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible</p>
                
                
                {/* Single YouTube Player */}
@@ -857,7 +857,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1 min-h-[220px]">
                               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-semibold flex items-center gap-2 font-serif">Your Space <BsStars className="w-5 h-5"/></h2>
+                <h2 className="text-lg font-semibold flex items-center gap-2 font-serif">Your Space ✨<BsStars className="w-5 h-5"/></h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -901,7 +901,7 @@ const App: React.FC = () => {
       {showBreakReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
-            <h3 className="text-xl font-bold mb-3 text-center">⏰ Time for a Break!</h3>
+            <h3 className="text-xl font-bold mb-3 text-center">Time for a Break ! ⏰</h3>
             <p className="text-gray-300 mb-4 text-center">
               You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.
             </p>
@@ -919,9 +919,9 @@ const App: React.FC = () => {
       {showEyeReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
-            <h3 className="text-xl font-bold mb-3 text-center">30-30-30 Rule 👁️</h3>
+            <h3 className="text-xl font-bold mb-3 text-center">30 30 30 Rule 👁️</h3>
             <p className="text-gray-300 mb-4 text-center">
-              Look at something 30 feet away for 30 seconds to reduce eye strain.
+              Look at something 30 feet away for 30 seconds to reduce eye strain
             </p>
             
             {/* Countdown Timer */}
