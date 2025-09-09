@@ -690,7 +690,7 @@ const App: React.FC = () => {
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 pb-6 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
-              <h2 className="text-lg font-semibold font-serif mb-3 text-gray-300 text-center">Focus Timer ⌛</h2>
+              <h2 className="text-lg font-semibold font-serif mb-3 text-gray-300">Focus Timer ⌛</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
                 <div className="flex items-center justify-center w-full mb-2">
@@ -754,7 +754,7 @@ const App: React.FC = () => {
             {/* Session History - Compact Version */}
             <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[210px]">
                              <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-lg font-semibold font-serif text-gray-300 text-center">Session History 📜</h2>
+                  <h2 className="text-lg font-semibold font-serif text-gray-300">Session History 📜</h2>
                  <button 
                    onClick={clearHistory}
                    className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -806,7 +806,7 @@ const App: React.FC = () => {
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
-               <h2 className="text-base font-semibold mb-3 font-serif text-gray-300 text-center">30 30 30 Rule 👁️</h2>
+               <h2 className="text-base font-semibold mb-3 font-serif text-gray-300">30 30 30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full -mt-5">
                  {eyeRuleActive ? (
                    <>
@@ -833,9 +833,9 @@ const App: React.FC = () => {
                          {/* Chill Music */}
              <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-3 min-h-[220px]">
                <div className="flex justify-between items-center mb-2">
-                 <h2 className="text-base font-semibold font-serif text-gray-300 text-center">Chill Music 🎧</h2>
+                 <h2 className="text-base font-semibold font-serif text-gray-300">Chill Music 🎧</h2>
                </div>
-              <p className="text-xs text-gray-300 mb-2 font-sans text-center">Volume is set to about 30% so tutorials stay audible</p>
+              <p className="text-xs text-gray-300 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible</p>
                
                
                {/* Single YouTube Player */}
@@ -857,7 +857,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1 min-h-[220px]">
                               <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-lg font-semibold flex items-center gap-2 font-serif text-gray-300 text-center">Your Space ✨</h2>
+                 <h2 className="text-lg font-semibold flex items-center gap-2 font-serif text-gray-300">Your Space ✨</h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
