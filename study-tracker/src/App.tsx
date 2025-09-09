@@ -862,7 +862,7 @@ const App: React.FC = () => {
                   onClick={clearForest}
                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
                 >
-                  Clear Space
+                  Clear
                 </button>
               </div>
               
