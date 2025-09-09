@@ -613,6 +613,7 @@ const App: React.FC = () => {
       eyeRuleTimerRef.current = null;
     }
     setCycleSession(prev => prev ? { ...prev, isPaused: true } : null);
+    setEyeRulePaused(true); // Pause eye rule timer when main session is paused
     pauseChillMusic();
   }, [pauseChillMusic]);
 
@@ -621,6 +622,15 @@ const App: React.FC = () => {
       setCycleSession(prev => prev ? { ...prev, isPaused: false } : null);
       startTimer(cycleSession);
       playChillMusic();
+      
+      // Resume eye rule timer if it was active
+      const savedEyeRuleActive = localStorage.getItem('eyeRuleActive');
+      const savedEyeRuleTimer = localStorage.getItem('eyeRuleTimer');
+      if (savedEyeRuleActive === 'true' && savedEyeRuleTimer) {
+        setEyeRuleActive(true);
+        setEyeRuleTimer(JSON.parse(savedEyeRuleTimer));
+        setEyeRulePaused(false);
+      }
     }
   }, [cycleSession, startTimer, playChillMusic]);
 
