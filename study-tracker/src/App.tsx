@@ -396,6 +396,13 @@ const App: React.FC = () => {
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
+  const formatMinutesSeconds = useCallback((milliseconds: number): string => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }, []);
+
   // Forward declare functions to avoid circular dependencies
   const addPlantToForest = useCallback(() => {
     const randomPlant = plantTypes[Math.floor(Math.random() * plantTypes.length)];
@@ -812,7 +819,7 @@ const App: React.FC = () => {
                  {eyeRuleActive ? (
                    <>
                      <div className="text-2xl font-bold text-[#a08dcc] mb-2">
-                       {formatTime(eyeRuleTimer)}
+                       {formatMinutesSeconds(eyeRuleTimer)}
                      </div>
                      <div className="text-xs text-gray-300 font-sans">
                        {showWelcomeMessages ? "Look at something 30 feet away for 30 seconds" : ""}
