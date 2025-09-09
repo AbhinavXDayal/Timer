@@ -877,14 +877,14 @@ const App: React.FC = () => {
               {forest.length === 0 ? (
                 <div className="flex-1 flex flex-col justify-center items-center text-center">
                   <div className="text-2xl font-bold text-forest-green font-serif mb-2">{forest.length}</div>
-                  <div className="text-sm text-gray-300 font-sans mb-4">Stars Collected</div>
+                  <div className="text-sm text-gray-300 font-sans mb-4">{showWelcomeMessages ? "Stars Collected" : ""}</div>
                   <div className="text-sm text-gray-300 font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space !" : ""}</div>
                 </div>
               ) : (
                 <>
                   <div className="text-center mb-3">
                     <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
-                    <div className="text-sm text-gray-300 font-sans">Stars Collected</div>
+                    <div className="text-sm text-gray-300 font-sans">{showWelcomeMessages ? "Stars Collected" : ""}</div>
                   </div>
                   <div className="grid grid-cols-3 gap-3 flex-1">
                     {forest.map((plant) => (
@@ -920,7 +920,7 @@ const App: React.FC = () => {
               onClick={dismissBreakReminder}
               className="w-full bg-forest-green hover:bg-forest-dark text-white py-2 rounded-xl font-semibold transition-colors duration-300"
             >
-              Got it!
+              Got it !
             </button>
           </div>
         </div>
