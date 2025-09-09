@@ -624,6 +624,8 @@ const App: React.FC = () => {
     stopReminders();
     setCycleSession(null);
     pauseChillMusic();
+    // Clear session from localStorage when stopped to ensure fresh start on refresh
+    localStorage.removeItem('cycleSession');
   }, [stopReminders, pauseChillMusic]);
 
   const playAlarm = useCallback(() => {
