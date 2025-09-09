@@ -693,7 +693,7 @@ const App: React.FC = () => {
               <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
-                <div className="flex-1 flex items-center justify-center w-full">
+                <div className="flex items-center justify-center w-full mb-2">
                   <div className="relative w-52 h-52">
                     <CircularProgressbar
                       value={getProgressPercentage()}
@@ -713,7 +713,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Minimal Controls */}
-                <div className="flex items-center gap-2 mt-4 mb-2">
+                <div className="flex items-center gap-2 mt-3 mb-4">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
