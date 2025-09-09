@@ -694,7 +694,7 @@ const App: React.FC = () => {
                       strokeWidth={5}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="timer-bit text-3xl tracking-wide">{formatTime(cycleSession?.timeLeft || 0)}</div>
+                      <div className="timer-bit text-3xl tracking-wide text-gray-300">{formatTime(cycleSession?.timeLeft || 0)}</div>
                     </div>
                   </div>
                 </div>
