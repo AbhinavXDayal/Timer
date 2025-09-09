@@ -160,7 +160,7 @@ const App: React.FC = () => {
     <div className="container">
       {/* Study Session Card */}
       <div className="card">
-        <h2>Study Session</h2>
+        <h2 style={{ textAlign: 'center' }}>Study Session</h2>
         
         {currentSession?.startTime && (
           <div className="time-display">
@@ -197,7 +197,7 @@ const App: React.FC = () => {
 
       {/* 30-30-30 Reminder Card */}
       <div className="card">
-        <h2>30-30-30 Rule Reminder</h2>
+        <h2 style={{ textAlign: 'center' }}>30-30-30 Rule Reminder</h2>
         <p style={{ textAlign: 'center', color: '#4a5568', marginBottom: '20px' }}>
           Every 30 minutes, look at something 30 feet away for 30 seconds to reduce eye strain.
         </p>
@@ -219,7 +219,7 @@ const App: React.FC = () => {
       {showBreakReminder && (
         <div className="modal">
           <div className="modal-content">
-            <h3>Time for a Break!</h3>
+            <h3 style={{ textAlign: 'center' }}>Time for a Break!</h3>
             <p>You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.</p>
             <button className="modal-button" onClick={dismissBreakReminder}>
               Got it!
@@ -232,7 +232,7 @@ const App: React.FC = () => {
       {showEyeReminder && (
         <div className="modal">
           <div className="modal-content">
-            <h3>30-30-30 Rule</h3>
+            <h3 style={{ textAlign: 'center' }}>30-30-30 Rule</h3>
             <p>Look at something 30 feet away for 30 seconds to reduce eye strain.</p>
             <button className="modal-button" onClick={dismissEyeReminder}>
               Dismiss
