@@ -887,11 +887,11 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-               {forest.length === 0 && (
-                 <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center items-center min-h-[120px]">
-                   <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
-             </div>
-           )}
+              {forest.length === 0 && (
+                <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
+                  <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
+            </div>
+          )}
             </div>
           </div>
         </div>
