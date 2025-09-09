@@ -690,7 +690,7 @@ const App: React.FC = () => {
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 pb-6 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
-              <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer ⌛</h2>
+              <h2 className="text-lg font-semibold font-serif mb-3 text-gray-300">Focus Timer ⌛</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
                 <div className="flex items-center justify-center w-full mb-2">
@@ -754,7 +754,7 @@ const App: React.FC = () => {
             {/* Session History - Compact Version */}
             <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[210px]">
                              <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-lg font-semibold font-serif">Session History 📜</h2>
+                  <h2 className="text-lg font-semibold font-serif text-gray-300">Session History 📜</h2>
                  <button 
                    onClick={clearHistory}
                    className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -794,7 +794,7 @@ const App: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-2 text-center text-gray-400 font-sans flex items-center justify-center min-h-[220px] pt-1">
+                  <div className="col-span-2 text-center text-gray-300 font-sans flex items-center justify-center min-h-[220px] pt-1">
                     {showWelcomeMessages ? "No sessions recorded yet. Start your first focus session!" : ""}
                   </div>
                 )}
@@ -806,14 +806,14 @@ const App: React.FC = () => {
           <div className="lg:col-span-1 flex flex-col h-full min-h-0">
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
-               <h2 className="text-base font-semibold mb-3 font-serif">30 30 30 Rule 👁️</h2>
+               <h2 className="text-base font-semibold mb-3 font-serif text-gray-300">30 30 30 Rule 👁️</h2>
                <div className="text-center flex flex-col justify-center h-full -mt-5">
                  {eyeRuleActive ? (
                    <>
                      <div className="text-2xl font-bold text-[#a08dcc] mb-2">
                        {formatTime(eyeRuleTimer)}
                      </div>
-                     <div className="text-xs text-gray-400 font-sans">
+                     <div className="text-xs text-gray-300 font-sans">
                        {showWelcomeMessages ? "Look at something 30 feet away for 30 seconds" : ""}
                      </div>
                    </>
@@ -822,7 +822,7 @@ const App: React.FC = () => {
                       <div className="text-2xl font-bold text-gray-400 mb-2 font-sans">
                         30:00
                       </div>
-                      <div className="text-xs text-gray-500 font-sans">
+                      <div className="text-xs text-gray-300 font-sans">
                         Start a focus session to begin the timer
                       </div>
                     </>
@@ -833,9 +833,9 @@ const App: React.FC = () => {
                          {/* Chill Music */}
              <div className="bg-gray-800/50 rounded-xl p-2 shadow-lg border border-gray-700/30 mb-3 min-h-[220px]">
                <div className="flex justify-between items-center mb-2">
-                 <h2 className="text-base font-semibold font-serif">Chill Music 🎧</h2>
+                 <h2 className="text-base font-semibold font-serif text-gray-300">Chill Music 🎧</h2>
                </div>
-              <p className="text-xs text-gray-400 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible</p>
+              <p className="text-xs text-gray-300 mb-2 font-sans">Volume is set to about 30% so tutorials stay audible</p>
                
                
                {/* Single YouTube Player */}
@@ -857,7 +857,7 @@ const App: React.FC = () => {
             {/* Forest Section */}
             <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 flex-1 min-h-[220px]">
                               <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-lg font-semibold flex items-center gap-2 font-serif">Your Space ✨</h2>
+                 <h2 className="text-lg font-semibold flex items-center gap-2 font-serif text-gray-300">Your Space ✨</h2>
                 <button
                   onClick={clearForest}
                   className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -866,32 +866,35 @@ const App: React.FC = () => {
                 </button>
               </div>
               
-              <div className="text-center mb-3">
-                <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
-                <div className="text-xs text-gray-400 font-sans">Stars Collected</div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 flex-1">
-                {forest.map((plant) => (
-                  <div
-                    key={plant.id}
-                    className="bg-gray-700 rounded-xl p-2.5 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
-                  >
-                    <div className="text-xl mb-1">
-                      <span role="img" aria-label="star">Star ✨</span>
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(plant.plantedAt).toLocaleDateString()}
-                    </div>
+              {forest.length === 0 ? (
+                <div className="flex-1 flex flex-col justify-center items-center text-center">
+                  <div className="text-2xl font-bold text-forest-green font-serif mb-2">{forest.length}</div>
+                  <div className="text-sm text-gray-300 font-sans mb-4">Stars Collected</div>
+                  <div className="text-sm text-gray-300 font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
+                    <div className="text-sm text-gray-300 font-sans">Stars Collected</div>
                   </div>
-                ))}
-              </div>
-
-              {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
-                  <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
-            </div>
-          )}
+                  <div className="grid grid-cols-3 gap-3 flex-1">
+                    {forest.map((plant) => (
+                      <div
+                        key={plant.id}
+                        className="bg-gray-700 rounded-xl p-2.5 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
+                      >
+                        <div className="text-xl mb-1">
+                          <span role="img" aria-label="star">Star ✨</span>
+                        </div>
+                        <div className="text-xs text-gray-300">
+                          {new Date(plant.plantedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
