@@ -202,9 +202,11 @@ const App: React.FC = () => {
       // Don't restore active sessions - start fresh on browser refresh
       if (!session.isActive) {
         setCycleSession(session);
-      }
-      // Clear any active session from localStorage to start fresh
-      if (session.isActive) {
+      } else if (session.isActive && session.isPaused) {
+        // If session was paused, restore it from the paused state
+        setCycleSession(session);
+      } else if (session.isActive && !session.isPaused) {
+        // If session was running (not paused), clear it to start fresh
         localStorage.removeItem('cycleSession');
       }
     }
