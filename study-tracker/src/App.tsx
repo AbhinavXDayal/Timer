@@ -807,7 +807,7 @@ const App: React.FC = () => {
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
                <h2 className="text-base font-semibold mb-3 font-serif">30-30-30 Rule 👁️</h2>
-               <div className="text-center flex flex-col justify-center h-full">
+               <div className="text-center flex flex-col justify-center h-full min-h-[200px]">
                  {eyeRuleActive ? (
                    <>
                      <div className="text-2xl font-bold text-[#a08dcc] mb-2">
@@ -819,12 +819,8 @@ const App: React.FC = () => {
                    </>
                                    ) : (
                     <>
-                      <div className="text-2xl font-bold text-gray-400 mb-2 font-sans">
-                        30:00
-                      </div>
-                      <div className="text-xs text-gray-500 font-sans">
-                        Start a focus session to begin the timer
-                      </div>
+                      <div className="text-2xl font-bold text-gray-400 mb-2 font-sans">30:00</div>
+                      <div className="text-xs text-gray-500 font-sans">Start a focus session to begin the timer</div>
                     </>
                   )}
                </div>
@@ -865,33 +861,35 @@ const App: React.FC = () => {
                   Clear Space
                 </button>
               </div>
-              
-              <div className="text-center mb-3">
-                <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
-                <div className="text-xs text-gray-400 font-sans">Stars Collected</div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 flex-1">
-                {forest.map((plant) => (
-                  <div
-                    key={plant.id}
-                    className="bg-gray-700 rounded-xl p-2.5 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
-                  >
-                    <div className="text-xl mb-1">
-                      <span role="img" aria-label="star">Star ✨</span>
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(plant.plantedAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
+              {forest.length === 0 ? (
+                <div className="flex-1 min-h-[220px] flex flex-col items-center justify-center text-center">
+                  <div className="text-2xl font-bold text-forest-green font-serif mb-1">{forest.length}</div>
+                  <div className="text-xs text-gray-400 font-sans mb-3">Stars Collected</div>
                   <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
-            </div>
-          )}
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-3">
+                    <div className="text-2xl font-bold text-forest-green font-serif">{forest.length}</div>
+                    <div className="text-xs text-gray-400 font-sans">Stars Collected</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 flex-1">
+                    {forest.map((plant) => (
+                      <div
+                        key={plant.id}
+                        className="bg-gray-700 rounded-xl p-2.5 text-center hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 animate-grow"
+                      >
+                        <div className="text-xl mb-1">
+                          <span role="img" aria-label="star">Star ✨</span>
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {new Date(plant.plantedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
