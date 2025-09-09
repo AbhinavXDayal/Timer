@@ -689,7 +689,7 @@ const App: React.FC = () => {
                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-6 gap-x-10 h-full items-stretch min-h-[calc(100vh-6.25rem)]">
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
-            <div className="bg-gray-800/50 rounded-2xl p-3 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
+            <div className="bg-gray-800/50 rounded-2xl p-3 pb-6 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
               <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
@@ -713,7 +713,7 @@ const App: React.FC = () => {
                 </div>
 
                 {/* Minimal Controls */}
-                <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-2 mt-4 mb-2">
                   {!cycleSession ? (
                     <button
                       onClick={startFocusSession}
