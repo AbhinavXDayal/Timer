@@ -497,6 +497,9 @@ const App: React.FC = () => {
 
     // Switch to next phase or complete cycle
     if (session.currentPhase === 'focus') {
+      // Show break reminder when focus session completes
+      setShowBreakReminder(true);
+      
       // Start break
       const newSession: CycleSession = {
         isActive: true,
@@ -537,12 +540,6 @@ const App: React.FC = () => {
   }, [completeSession]); // Removed startReminders dependency to avoid circular references
 
   const startReminders = useCallback(() => {
-    // 2-hour break reminder
-    breakIntervalRef.current = setInterval(() => {
-      setShowBreakReminder(true);
-      playAlarm();
-    }, 2 * 60 * 60 * 1000);
-
     // Start 30-30-30 rule timer
     setEyeRuleActive(true);
     setEyeRuleTimer(30 * 60 * 1000); // Reset to 30 minutes
@@ -563,13 +560,9 @@ const App: React.FC = () => {
         return prev - 1000;
       });
     }, 1000);
-  }, [setShowBreakReminder, setEyeRuleActive, setEyeRuleTimer, setShowEyeReminder, setEyeReminderCountdown, setReminderState, setCycleSession]); // Removed dependencies to avoid circular references
+  }, [setEyeRuleActive, setEyeRuleTimer, setShowEyeReminder, setEyeReminderCountdown, setReminderState, setCycleSession]); // Removed dependencies to avoid circular references
 
   const stopReminders = useCallback(() => {
-    if (breakIntervalRef.current) {
-      clearInterval(breakIntervalRef.current);
-      breakIntervalRef.current = null;
-    }
     if (eyeReminderIntervalRef.current) {
       clearInterval(eyeReminderIntervalRef.current);
       eyeReminderIntervalRef.current = null;
