@@ -794,7 +794,7 @@ const App: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="col-span-2 text-center text-gray-400 font-sans flex items-center justify-center min-h-[240px] pt-4">
+                  <div className="col-span-2 text-center text-gray-400 font-sans flex items-center justify-center min-h-[220px] pt-1">
                     {showWelcomeMessages ? "No sessions recorded yet. Start your first focus session!" : ""}
                   </div>
                 )}
