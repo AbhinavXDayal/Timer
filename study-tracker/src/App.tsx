@@ -690,7 +690,7 @@ const App: React.FC = () => {
           {/* Main Timer Section */}
           <div className="lg:col-span-2 flex flex-col h-full">
             <div className="bg-gray-800/50 rounded-2xl p-3 pb-6 shadow-lg border border-gray-700/30 lg:min-h-[342px]">
-              <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer</h2>
+              <h2 className="text-lg font-semibold font-serif mb-3">Focus Timer ⌛</h2>
               <div className="flex flex-col items-center h-full">
                 {/* Minimal Circular Timer */}
                 <div className="flex items-center justify-center w-full mb-2">
@@ -754,7 +754,7 @@ const App: React.FC = () => {
             {/* Session History - Compact Version */}
             <div className="bg-gray-800/50 rounded-xl p-4 mt-3 shadow-lg border border-gray-700/30 flex-1 lg:min-h-[210px]">
                              <div className="flex justify-between items-center mb-3">
-                 <h2 className="text-lg font-semibold font-serif">Session History</h2>
+                 <h2 className="text-lg font-semibold font-serif">Session History 📜</h2>
                  <button 
                    onClick={clearHistory}
                    className="text-gray-500 hover:text-gray-300 transition-colors duration-200 text-sm px-2 py-1"
@@ -903,7 +903,7 @@ const App: React.FC = () => {
           <div className="bg-gray-800 rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
             <h3 className="text-xl font-bold mb-3 text-center">Time for a Break ! ⏰</h3>
             <p className="text-gray-300 mb-4 text-center">
-              You've been studying for 2 hours. Take a 30-minute break to rest your mind and eyes.
+              You've been studying for 2 hours, take a 30 min break to rest your mind & eyes
             </p>
             <button
               onClick={dismissBreakReminder}
