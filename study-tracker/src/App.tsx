@@ -66,6 +66,7 @@ const App: React.FC = () => {
   const [eyeReminderCountdown, setEyeReminderCountdown] = useState(30);
   const [eyeRuleTimer, setEyeRuleTimer] = useState(30 * 60 * 1000); // 30 minutes in milliseconds
   const [eyeRuleActive, setEyeRuleActive] = useState(false);
+  const [eyeRulePaused, setEyeRulePaused] = useState(false);
   const [currentVideoId, setCurrentVideoId] = useState('wmLGG5DYDWQ'); // Default video ID
   const [showWelcomeMessages, setShowWelcomeMessages] = useState(true);
 
@@ -181,17 +182,17 @@ const App: React.FC = () => {
 
       const node = gun.get('space-focus').get(spaceId);
       node.get('sessionHistory').once((d: any) => {
-        if (d) {
+        if (d && !savedHistory) { // Only use GUN data if no localStorage data
           try { setSessionHistory(JSON.parse(d)); } catch (_) {}
         }
       });
       node.get('forest').once((d: any) => {
-        if (d) {
+        if (d && !savedForest) { // Only use GUN data if no localStorage data
           try { setForest(JSON.parse(d)); } catch (_) {}
         }
       });
       node.get('reminderState').once((d: any) => {
-        if (d) {
+        if (d && !savedReminderState) { // Only use GUN data if no localStorage data
           try { setReminderState(JSON.parse(d)); } catch (_) {}
         }
       });
@@ -380,6 +381,7 @@ const App: React.FC = () => {
               eyeCountdownRef.current = null;
             }
             setShowEyeReminder(false);
+            setEyeRulePaused(false); // Resume the 30-minute timer
             return 30;
           }
           return prev - 1;
@@ -546,10 +548,16 @@ const App: React.FC = () => {
     
     eyeRuleTimerRef.current = setInterval(() => {
       setEyeRuleTimer(prev => {
+        // Don't count down if paused during 30-second countdown
+        if (eyeRulePaused) {
+          return prev;
+        }
+        
         if (prev <= 1000) {
           // Timer finished - show reminder
           setShowEyeReminder(true);
           setEyeReminderCountdown(30);
+          setEyeRulePaused(true); // Pause the 30-minute timer during countdown
           playAlarm();
           setReminderState(prev => ({ ...prev, lastReminder: Date.now(), dismissed: false }));
           startEyeCountdown();
@@ -638,6 +646,7 @@ const App: React.FC = () => {
 
   const dismissEyeReminder = useCallback(() => {
     setShowEyeReminder(false);
+    setEyeRulePaused(false); // Resume the 30-minute timer
     setReminderState(prev => ({ ...prev, dismissed: true }));
   }, []);
 
@@ -651,6 +660,7 @@ const App: React.FC = () => {
             eyeCountdownRef.current = null;
           }
           setShowEyeReminder(false);
+          setEyeRulePaused(false); // Resume the 30-minute timer
           return 30;
         }
         return prev - 1;
