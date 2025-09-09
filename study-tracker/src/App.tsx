@@ -807,7 +807,7 @@ const App: React.FC = () => {
                          {/* 30-30-30 Rule Timer */}
              <div className="bg-gray-800/50 rounded-xl p-4 shadow-lg border border-gray-700/30 mb-3 flex-1 min-h-[220px]">
                <h2 className="text-base font-semibold mb-3 font-serif">30 30 30 Rule 👁️</h2>
-               <div className="text-center flex flex-col justify-center h-full -mt-3">
+               <div className="text-center flex flex-col justify-center h-full -mt-5">
                  {eyeRuleActive ? (
                    <>
                      <div className="text-2xl font-bold text-[#a08dcc] mb-2">
@@ -887,11 +887,11 @@ const App: React.FC = () => {
                 ))}
               </div>
 
-              {forest.length === 0 && (
-                <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center">
-                  <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
-            </div>
-          )}
+               {forest.length === 0 && (
+                 <div className="text-center text-gray-400 py-4 flex-1 flex flex-col justify-center items-center min-h-[120px]">
+                   <div className="text-sm font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
+             </div>
+           )}
             </div>
           </div>
         </div>
