@@ -697,7 +697,7 @@ const App: React.FC = () => {
 
   const getProgressColor = useCallback(() => {
     if (!cycleSession) return '#3b82f6';
-    return cycleSession.currentPhase === 'focus' ? '#a08dcc' : '#f59e0b';
+    return cycleSession.currentPhase === 'focus' ? '#7c6ba3' : '#f59e0b';
   }, [cycleSession]);
 
   return (
