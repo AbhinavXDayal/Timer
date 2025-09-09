@@ -795,7 +795,7 @@ const App: React.FC = () => {
                   ))
                 ) : (
                   <div className="col-span-2 text-center text-gray-300 font-sans flex items-center justify-center min-h-[220px] pt-1">
-                    {showWelcomeMessages ? "No sessions recorded yet. Start your first focus session!" : ""}
+                    {showWelcomeMessages ? "No sessions recorded yet, start your first focus session !" : ""}
                   </div>
                 )}
               </div>
@@ -870,7 +870,7 @@ const App: React.FC = () => {
                 <div className="flex-1 flex flex-col justify-center items-center text-center">
                   <div className="text-2xl font-bold text-forest-green font-serif mb-2">{forest.length}</div>
                   <div className="text-sm text-gray-300 font-sans mb-4">Stars Collected</div>
-                  <div className="text-sm text-gray-300 font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space!" : ""}</div>
+                  <div className="text-sm text-gray-300 font-sans">{showWelcomeMessages ? "Complete focus sessions to light up your space !" : ""}</div>
                 </div>
               ) : (
                 <>
